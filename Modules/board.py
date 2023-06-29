@@ -2,39 +2,38 @@ from Modules.pieces import *
 
 class Board:
 
-    def __init__(self, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
-        #figure out logic for FEN later
-        self._rep = [[]]
-        self._FEN = FEN.split(" ")[0]
-        for i in self._FEN:
-            if i == "/":
-                self._rep.append([])
-            elif i in "1234567890":
-                for _ in range(int(i)):
-                    self._rep[-1].append(" ")
-            else:
-                self._rep[-1].append(self.generate_piece(i))
-                # print(self.generate_piece(i))
-    
-    def __str__(cls): #prints board to console and returns FEN
+    def __init__(self, FEN: str) -> None:
+        self.set_board(FEN)
+
+
+    def __str__(cls) -> str: #prints board to console and returns FEN
         out = []
         #printing for console
         for i in range(len(cls._rep)):
             print([str(j) for j in cls._rep[i]]) 
             out += cls._rep[i]
         return cls.export_FEN()
-        
-        
-        
-       
 
-    def get_board(cls):
+
+    def get_board(cls) -> list[list]:
+        """Returns 2D array of objects used to represent the chess board"""
         return cls._rep
-    
-    def set_board(cls, FEN):
-        #logic to come
-        pass
-    
+
+
+    def set_board(cls, FEN: str) -> None:
+        rep = [[]]
+        FEN = FEN.split(" ")[0]
+        for i in FEN:
+            if i == "/":
+                rep.append([])
+            elif i in "1234567890":
+                for _ in range(int(i)):
+                    rep[-1].append(" ")
+            else:
+                rep[-1].append(cls.generate_piece(i))
+        cls._rep = rep
+
+
     def generate_piece(cls, piece: str) -> Piece:
         output = None
         match piece.lower():
@@ -50,7 +49,8 @@ class Board:
         else:
             output.set_colour("white")
             return output
-        
+
+
     def export_FEN(cls) -> str:
         FEN = ""
         for i in range(len(cls._rep)):
@@ -69,4 +69,3 @@ class Board:
             if i != len(cls._rep)-1:
                 FEN += "/"
         return FEN
-

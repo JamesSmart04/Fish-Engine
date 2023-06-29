@@ -1,6 +1,14 @@
 import Modules
 
-print(range(5))
-temp = Modules.board.Board("3qkb1r/pp1n1ppp/3p2b1/1B2p1N1/1n2P3/1PN5/Q4PPP/2BK3R")
-print(temp)
+class main():
+    def __init__(self, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") -> None:
+        # setting the board
+        self.board = Modules.board.Board(FEN)
+        print(self.board)
+    
+    def __str__(self) -> str:
+        pass
+        
 
+if __name__ == "__main__":
+    game = main()

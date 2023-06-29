@@ -1,51 +1,50 @@
 class Piece:
-    def __init__(self, colour="W", pos=[0,0]):
+    def __init__(self, colour="W", pos=[0,0]) -> None:
         self._pos = pos
         self._colour = colour
+        self._piece = ""
     
-    def set_colour(cls, colour):
+    def set_colour(cls, colour) -> None:
         cls._colour = colour
+    
+    def __str__(cls) -> str:
+        if cls._colour == "black":
+            return cls._piece.lower()
+        else:
+            return cls._piece.upper()
 
     
 class Pawn(Piece):
-    def __str__(cls):
-        if cls._colour == "black":
-            return "p"
-        else:
-            return "P"
-        
-class Rook(Piece):
-    def __str__(cls):
-        if cls._colour == "black":
-            return "r"
-        else:
-            return "R"
-        
-class Knight(Piece):
-    def __str__(cls):
-        if cls._colour == "black":
-            return "n"
-        else:
-            return "N"
-        
-class Bishop(Piece):
-    def __str__(cls):
-        if cls._colour == "black":
-            return "b"
-        else:
-            return "B"
-        
-class Queen(Piece):
-    def __str__(cls):
-        if cls._colour == "black":
-            return "q"
-        else:
-            return "Q"
-        
-class King(Piece):
-    def __str__(cls):
-        if cls._colour == "black":
-            return "k"
-        else:
-            return "K"
+    def __init__(self, colour="W", pos=[0, 0]) -> None:
+        super().__init__(colour, pos)
+        self._piece = "p"
 
+
+class Rook(Piece):
+    def __init__(self, colour="W", pos=[0, 0]) -> None:
+        super().__init__(colour, pos)
+        self._piece = "r"
+
+
+class Knight(Piece):
+    def __init__(self, colour="W", pos=[0, 0]) -> None:
+        super().__init__(colour, pos)
+        self._piece = "n"
+
+
+class Bishop(Piece):
+    def __init__(self, colour="W", pos=[0, 0]) -> None:
+        super().__init__(colour, pos)
+        self._piece = "b"
+
+
+class Queen(Piece):
+    def __init__(self, colour="W", pos=[0, 0]) -> None:
+        super().__init__(colour, pos)
+        self._piece = "q"
+
+
+class King(Piece):
+    def __init__(self, colour="W", pos=[0, 0]) -> None:
+        super().__init__(colour, pos)
+        self._piece = "k"
