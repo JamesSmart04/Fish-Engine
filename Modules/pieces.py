@@ -64,33 +64,47 @@ class Rook(Piece):
         #veritcal
         legal_moves = []
         #above
-        i = -1
-        currentSquare = board._rep[cls._pos[1]+i][cls._pos[0]]
+        i = 0
+        currentSquare = board._rep[cls._pos[1]-1][cls._pos[0]]
         while isinstance(currentSquare, Empty) and cls._pos[1]+i > 0:
-            legal_moves.append(currentSquare._pos)
             i -= 1
             currentSquare = board._rep[cls._pos[1]+i][cls._pos[0]]
-        i = 1
-        currentSquare = board._rep[cls._pos[1]+1][cls._pos[0]]
+            legal_moves.append(currentSquare._pos)
+        # if not isinstance(currentSquare, Empty):
+        #     legal_moves.append(currentSquare._pos)
+
         #below
-        while isinstance(currentSquare, Empty) and cls._pos[1]+i < 1:
-            legal_moves.append(currentSquare._pos)
+        i = 0
+        currentSquare = board._rep[cls._pos[1]+1][cls._pos[0]]
+        while isinstance(currentSquare, Empty) and cls._pos[1]+i < 7:
             i += 1
             currentSquare = board._rep[cls._pos[1]+i][cls._pos[0]]
-      
-        #horizontal
-        i = -1
-        currentSquare = board._rep[cls._pos[1]][cls._pos[0]+i]
-        while isinstance(currentSquare, Empty) and cls._pos[0]+i > 0:
             legal_moves.append(currentSquare._pos)
+        # if not isinstance(currentSquare, Empty):
+        #     legal_moves.append(currentSquare._pos)
+    
+        #horizontal left
+        i = 0
+        currentSquare = board._rep[cls._pos[1]][cls._pos[0]-1]
+        while isinstance(currentSquare, Empty) and cls._pos[0]+i > 0:
             i -= 1
             currentSquare = board._rep[cls._pos[1]][cls._pos[0]+i]
-        i = 1
-        currentSquare = board._rep[cls._pos[1]][cls._pos[0]+i]
-        while isinstance(currentSquare, Empty) and cls._pos[0]+i < 7:
             legal_moves.append(currentSquare._pos)
+        # if not isinstance(currentSquare, Empty):
+        #     legal_moves.append(currentSquare._pos)
+
+        #right
+        i = 0
+        currentSquare = board._rep[cls._pos[1]][cls._pos[0]+1]
+        while isinstance(currentSquare, Empty) and cls._pos[0]+i < 7:
             i += 1
             currentSquare = board._rep[cls._pos[1]][cls._pos[0]+i]
+            legal_moves.append(currentSquare._pos)
+            
+            
+        # if not isinstance(currentSquare, Empty):
+        #     legal_moves.append(currentSquare._pos)
+            
         return legal_moves
 
 
