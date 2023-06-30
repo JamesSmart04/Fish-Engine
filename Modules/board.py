@@ -10,7 +10,7 @@ class Board:
         out = []
         #printing for console
         for i in range(len(cls._rep)):
-            print([str(j) for j in cls._rep[i]]) 
+            print(len(cls._rep)-1-i,[str(j) for j in cls._rep[i]],i) 
             out += cls._rep[i]
         return cls.export_FEN()
 
@@ -18,19 +18,32 @@ class Board:
     def get_board(cls) -> list[list]:
         """Returns 2D array of objects used to represent the chess board"""
         return cls._rep
+    
 
+    def get_piece(cls, pos: list) -> Piece:
+        #pos[0] == horizontal, pos[1] == vertical
+        if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7:
+            print(f'{pos} is invalid')
+            return False
+        return cls._rep[7-pos[1]][pos[0]]
 
     def set_board(cls, FEN: str) -> None:
-        rep = [[]]
+        rep = [[]*8]
         FEN = FEN.split(" ")[0]
         for i in FEN:
             if i == "/":
                 rep.append([])
             elif i in "1234567890":
                 for _ in range(int(i)):
-                    rep[-1].append(" ")
+                    empty_piece = cls.generate_piece(i)
+                    empty_piece.set_pos([len(rep[-1]),len(rep)-1])
+                    rep[-1].append(empty_piece)
             else:
-                rep[-1].append(cls.generate_piece(i))
+                temp_piece = cls.generate_piece(i)
+                temp_piece.set_pos([len(rep[-1]),len(rep)-1])
+                if isinstance(temp_piece, Bishop):
+                    print(temp_piece._pos)
+                rep[-1].append(temp_piece)
         cls._rep = rep
 
 
@@ -43,6 +56,7 @@ class Board:
             case "b" : output = Bishop()
             case "q" : output = Queen()
             case "k" : output = King()  
+            case _ : output = Empty()
         if piece.islower():
             output.set_colour("black")
             return output
@@ -57,7 +71,7 @@ class Board:
             j = 0
             while j < len(cls._rep[i]):
                 count = 0
-                while(j < len(cls._rep[i]) and cls._rep[i][j] == " " ):
+                while(j < len(cls._rep[i]) and  isinstance(cls._rep[i][j],Empty)):
                     count+= 1
                     j += 1
                 if count != 0:
