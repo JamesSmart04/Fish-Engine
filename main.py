@@ -11,4 +11,4 @@ class main():
         
 
 if __name__ == "__main__":
-    game = main("8/8/8/8/8/8/6K1/7B w - - 0 1")
+    game = main("8/8/8/8/8/8/8/7Q w - - 0 1")
