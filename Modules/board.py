@@ -28,7 +28,7 @@ class Board:
         return cls._rep[7-pos[1]][pos[0]]
 
     def set_board(cls, FEN: str) -> None:
-        rep = [[]*8]
+        rep = [[]]
         FEN = FEN.split(" ")[0]
         for i in FEN:
             if i == "/":
