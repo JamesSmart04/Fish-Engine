@@ -29,7 +29,9 @@ class Board:
 
     def set_board(cls, FEN: str) -> None:
         rep = [[]]
-        FEN = FEN.split(" ")[0]
+        FEN_list = FEN.split(" ")
+        FEN = FEN_list[0]
+        turn = "white" if FEN_list[1].lower() == "w" else "black"
         for i in FEN:
             if i == "/":
                 rep.append([])
@@ -45,6 +47,22 @@ class Board:
                     print(temp_piece._pos)
                 rep[-1].append(temp_piece)
         cls._rep = rep
+        cls._turn = turn
+    
+    def set_turn(cls, turn):
+        cls._turn = turn
+
+    def get_turn(cls):
+        return cls._turn
+
+    def get_legal_moves(cls):
+        legal_moves = {}
+        for i in range(len(cls._rep)):
+            for j in range(len(cls._rep[0])):
+                curPiece = cls._rep[i][j]              
+                if not isinstance(curPiece, Empty) and curPiece.get_colour() == cls._turn:
+                    legal_moves[curPiece] = curPiece.get_legal_moves(cls)
+        return legal_moves
 
 
     def generate_piece(cls, piece: str) -> Piece:
@@ -60,8 +78,10 @@ class Board:
         if piece.islower():
             output.set_colour("black")
             return output
-        else:
+        elif piece.isupper():
             output.set_colour("white")
+            return output
+        else:
             return output
 
 

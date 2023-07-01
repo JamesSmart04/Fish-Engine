@@ -267,6 +267,81 @@ class King(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
         super().__init__(colour, pos)
         self._piece = "k"
+    def set_attacked_squares(cls, board):
+        #primarly used to check pinning and checking 
+        cur_colour = ""
+        cls.diagonal_squares = []
+        cls.horizontal_squares = []
+        #checking above
+        def checkVertical(direction):
+            i = direction
+            current_piece = None
+            seen_friend = False
+            seen_enemy = False
+            file_squares = []
+            while cls._pos[1]+i >= 0 and cls._pos[1]+i <=7:
+                current_piece : Piece = board._rep[cls._pos[1]+i][cls._pos[0]]
+                file_squares.append(current_piece.get_position())
+                isEmpty = isinstance(current_piece, Empty) 
+                
+                if not isEmpty and current_piece.get_colour() != cls._colour:
+                    seen_enemy = True
+
+                if seen_enemy == True: #if king is checked
+                    if isinstance(current_piece, Rook) or isinstance(current_piece, Queen):
+                        
+                        cls.horizontal_squares.append(file_squares)
+                        break
+                elif not isEmpty and seen_friend == True and current_piece.get_colour() == cls._colour: #two frinedly pieces
+                    break
+
+                elif cls != current_piece and current_piece.get_colour()  == cls._colour:
+                    seen_friend = True
+
+                i += direction 
+
+        def checkHorizontal(direction):
+            i = direction
+            current_piece = None
+            seen_friend = False
+            seen_enemy = False
+            file_squares = []
+            while cls._pos[0]+i >= 0 and cls._pos[0]+i <=7:
+                current_piece : Piece = board._rep[cls._pos[1]][cls._pos[0]+i]
+                file_squares.append(current_piece.get_position())
+                isEmpty = isinstance(current_piece, Empty) 
+                
+                if not isEmpty and current_piece.get_colour() != cls._colour:
+                    seen_enemy = True
+
+                if seen_enemy == True: #if king is checked
+                    if isinstance(current_piece, Rook) or isinstance(current_piece, Queen):
+                        
+                        cls.horizontal_squares += file_squares
+                        break
+                elif not isEmpty and seen_friend == True and current_piece.get_colour() == cls._colour: #two frinedly pieces
+                    break
+
+                elif cls != current_piece and current_piece.get_colour()  == cls._colour:
+                    seen_friend = True
+
+                i += direction 
+        # def checkLeft(direction)
+            
+        checkVertical(-1) #above
+        checkVertical(1) #below
+        checkHorizontal(-1) #left
+        checkHorizontal(1) #right
+        
+
+        
+            
+
+    def get_diagonal_attacked_squares(cls):
+        return cls.diagonal_squares
+
+    def get_horizontal_attacked_squares(cls):
+        return cls.horizontal_squares
 
     def get_legal_moves(cls,board):
         #top row
@@ -301,7 +376,7 @@ class King(Piece):
             
 
 class Empty(Piece):
-    def __init__(self,colour = "", pos=[0,0]) -> None:
+    def __init__(self,colour = "empty", pos=[0,0]) -> None:
         super().__init__(colour,pos)
         self._piece = "e"
     def __str__(cls) -> str:
