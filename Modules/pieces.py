@@ -8,6 +8,8 @@ class Piece:
     def get_colour(cls) -> str:
         return cls._colour
     
+    def get_position(cls) -> list:
+        return cls._pos
     def set_colour(cls, colour) -> None:
         cls._colour = colour
     
@@ -265,6 +267,38 @@ class King(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
         super().__init__(colour, pos)
         self._piece = "k"
+
+    def get_legal_moves(cls,board):
+        #top row
+        #making sure the king isn't at the top of the board
+        legal_moves = []
+
+        for i in [-1,1]:
+            if ((cls._pos[0]+i >= 0 and cls._pos[0]+i <= 7) 
+            and (isinstance(board._rep[cls._pos[1]][cls._pos[0]+i], Empty) 
+            or board._rep[cls._pos[1]][cls._pos[0]+i].get_colour() != cls._colour)):
+                legal_moves.append(board._rep[cls._pos[1]][cls._pos[0]+i].get_position())
+                
+        if cls._pos[1] > 0:
+            for i in [-1,0,1]:
+                if ((cls._pos[0]+i >= 0 and cls._pos[0]+i <= 7) 
+                and (isinstance(board._rep[cls._pos[1] - 1][cls._pos[0]+i], Empty) 
+                or board._rep[cls._pos[1] - 1][cls._pos[0]+i].get_colour() != cls._colour)):
+                    legal_moves.append(board._rep[cls._pos[1] - 1][cls._pos[0]+i].get_position())
+
+
+
+        if cls._pos[1] < 7:
+            for i in [-1,0,1]:
+                if ((cls._pos[0]+i >= 0 and cls._pos[0]+i <= 7) 
+                and (isinstance(board._rep[cls._pos[1] + 1][cls._pos[0]+i], Empty) 
+                or board._rep[cls._pos[1] + 1][cls._pos[0]+i].get_colour() != cls._colour)):
+                    legal_moves.append(board._rep[cls._pos[1] + 1][cls._pos[0]+i].get_position())
+        
+
+        return legal_moves
+        
+            
 
 class Empty(Piece):
     def __init__(self,colour = "", pos=[0,0]) -> None:

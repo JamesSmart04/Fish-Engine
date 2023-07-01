@@ -5,10 +5,10 @@ class main():
         # setting the board
         self.board = Modules.board.Board(FEN)
         print(self.board)
-        print(self.board.get_piece([7,0]).get_legal_moves(self.board))
+        print(self.board.get_piece([6,7]).get_legal_moves(self.board))
     def __str__(self) -> str:
         pass
         
 
 if __name__ == "__main__":
-    game = main("8/8/8/8/8/8/8/7Q w - - 0 1")
+    game = main("6K1/8/8/8/8/8/8/8 w - - 0 1")
