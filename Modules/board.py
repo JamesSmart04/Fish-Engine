@@ -1,4 +1,4 @@
-from Modules.pieces import *
+from Modules.Pieces import *
 
 class Board:
 
@@ -43,8 +43,12 @@ class Board:
             else:
                 temp_piece = cls.generate_piece(i)
                 temp_piece.set_pos([len(rep[-1]),len(rep)-1])
-                if isinstance(temp_piece, Bishop):
-                    print(temp_piece._pos)
+                if isinstance(temp_piece, King): #storing king posito
+                    if temp_piece._colour == "white":
+                        cls._white_king_position = temp_piece._pos
+                    else:
+                        cls._black_king_position = temp_piece._pos
+
                 rep[-1].append(temp_piece)
         cls._rep = rep
         cls._turn = turn

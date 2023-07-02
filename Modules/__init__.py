@@ -1,3 +1,4 @@
 from . import board
-from . import pieces
+from .Pieces import *
 from . import misc
+#so does this look rightish a
