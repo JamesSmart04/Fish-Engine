@@ -4,6 +4,7 @@ class Board:
 
     def __init__(self, FEN: str) -> None:
         self.set_board(FEN)
+        self.en_passant_list = []
 
 
     def __str__(cls) -> str: #prints board to console and returns FEN
@@ -26,6 +27,16 @@ class Board:
             print(f'{pos} is invalid')
             return False
         return cls._rep[7-pos[1]][pos[0]]
+
+    def clear_en_passant_list(cls) -> None:
+        cls.en_passant_list = []
+
+    def get_en_passant_list(cls) -> list:
+        return cls.en_passant_list
+
+    def add_to_en_passanter_list(cls, pawn) -> None:
+        cls.en_passant_list.append(pawn)
+        
 
     def set_board(cls, FEN: str) -> None:
         rep = [[]]

@@ -1,9 +1,12 @@
 from .piece import Piece
-from .empty import Empty 
+from .empty import Empty
+
+
 class Rook(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
         super().__init__(colour, pos)
         self._piece = "r"
+        self._value = 500
     
     def get_legal_moves(cls, board):
         #veritcal

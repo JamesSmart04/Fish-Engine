@@ -1,6 +1,3 @@
-
-
-
 def convert_pos(pos:list) -> list:
     """takes a human position and converts to inhuman position"""
     alpharange = "abcdefgh"
