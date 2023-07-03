@@ -42,9 +42,9 @@ class Board:
         rep = [[]]
         FEN_list = FEN.split(" ")
         FEN = FEN_list[0]
-        castling_info = FEN[2]
-        white_castling_availibility = [int(castling_info[0].isupper()),int(castling_info[1].isupper())]
-        black_castling_availibility = [int(castling_info[2].islower()),int(castling_info[2].islower())]
+        castling_info = FEN_list[2]
+        cls._white_castling_availibility = [int("K" in castling_info),int("Q" in castling_info)] 
+        cls._black_castling_availibility = [int("k" in castling_info),int("q" in castling_info)]
         
         turn = "white" if FEN_list[1].lower() == "w" else "black"
         for i in FEN:
@@ -120,5 +120,5 @@ class Board:
                     j+= 1
 
             if i != len(cls._rep)-1:
-                FEN += "/"
+                FEN += "/"  
         return FEN
