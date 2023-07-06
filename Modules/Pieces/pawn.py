@@ -17,7 +17,7 @@ class Pawn(Piece):
         # straight
         if isinstance(board._rep[cls._pos[1]+direction][cls._pos[0]], Empty):
             legal_moves.append([cls._pos[0],cls._pos[1]+direction])
-            start_row = 6 if direction == -1 else 2 
+            start_row = 6 if direction == -1 else 1
             if cls._pos[1] == start_row  and isinstance(board._rep[cls._pos[1]+direction*2][cls._pos[0]], Empty):
                 legal_moves.append([cls._pos[0],cls._pos[1]+direction*2])
                 

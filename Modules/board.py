@@ -1,5 +1,5 @@
 from Modules.Pieces import *
-from Modules.misc import convert_pos
+from Modules.misc import convert_pos, convert_pos_to_string
 
 class Board:
 
@@ -28,6 +28,7 @@ class Board:
             print(f'{pos} is invalid')
             return False
         return cls._rep[7-pos[1]][pos[0]]
+    
 
     def clear_en_passant_list(cls) -> None:
         cls.en_passant_list = []
@@ -47,7 +48,7 @@ class Board:
         cls._white_castling_availibility = [int("K" in castling_info),int("Q" in castling_info)] 
         cls._black_castling_availibility = [int("k" in castling_info),int("q" in castling_info)]
         
-        turn = "white" if FEN_list[1].lower() == "w" else "black"
+        turn = -1 if FEN_list[1].lower() == "w" else 1 #0 means it is whites turn, 1 means it is black turn
         for i in FEN:
             if i == "/":
                 rep.append([])
@@ -73,29 +74,41 @@ class Board:
         cls._turn = turn
 
     def get_turn(cls):
-        return cls._turn
+        return "white" if cls._turn == -1 else "black"
+
 
     def get_legal_moves(cls):
         legal_moves = {}
         for i in range(len(cls._rep)):
             for j in range(len(cls._rep[0])):
                 curPiece = cls._rep[i][j]              
-                if not isinstance(curPiece, Empty) and curPiece.get_colour() == cls._turn:
-                    legal_moves[curPiece] = curPiece.get_legal_moves(cls)
+                if not isinstance(curPiece, Empty) and curPiece.get_colour() == cls.get_turn():
+                    legal_moves[convert_pos_to_string(curPiece.get_position())] = curPiece.get_legal_moves(cls)
         return legal_moves
+
     
-    def update_position(cls, piecePosition) -> None:
-        movingPiece = cls.get_piece(piecePosition)
-        legal_moves = movingPiece.get_legal_moves(cls)
-        print("Select move: ", legal_moves)
+    def update_position(cls) -> None:
+        print(cls)
+        legal_moves = cls.get_legal_moves()
+
+        print("Select a piece to move: ", legal_moves)
         while True:
-            selected_move = input("Please select a xy: ")                     
-            selected_move = convert_pos([selected_move[0],int(selected_move[1])])
-            if selected_move in legal_moves:
+            movingPiece = input("Please select a square: ")                     
+            if movingPiece in legal_moves:
                 break
-        targetPiece = cls._rep[selected_move[1]][selected_move[0]]
+        piece_legal_moves = legal_moves[movingPiece]
+        print(f"legal moves: {piece_legal_moves}")
+        movingPiece = cls.get_piece(convert_pos(movingPiece))
+        while True:
+            targetPiece = input("please select a square to move to")
+            if convert_pos(targetPiece) in piece_legal_moves:
+                targetPiece = cls.get_piece(convert_pos(targetPiece))
+                break
         targetPiecePositon = targetPiece.get_position()
         if isinstance(targetPiece, Empty):
+            #adding to en passant list 
+            if isinstance(targetPiece, Pawn) and abs(targetPiece.get_position()[1] - movingPiece.get_position()[1]) > 1:
+                cls.add_to_en_passanter_list(movingPiece)
             cls._rep[targetPiecePositon[1]][targetPiecePositon[0]], cls._rep[movingPiece._pos[1]][movingPiece._pos[0]] = cls._rep[movingPiece._pos[1]][movingPiece._pos[0]],cls._rep[targetPiecePositon[1]][targetPiecePositon[0]]
             temp = targetPiecePositon
             targetPiece.set_pos([movingPiece._pos[0],movingPiece._pos[1]])
@@ -105,6 +118,7 @@ class Board:
             cls._rep[movingPiece._pos[1]][movingPiece._pos[0]] = tempPiece
             cls._rep[targetPiecePositon[1]][targetPiecePositon[0]] = movingPiece
             movingPiece.set_pos(targetPiecePositon)        
+        cls._turn = cls._turn*-1
             
             
         

@@ -55,7 +55,6 @@ class Rook(Piece):
         currentSquare = Empty()
         while isinstance(currentSquare, Empty) and cls._pos[0]+i < 7:
             i += 1
-            print(cls._pos[0]+i)
             currentSquare = board._rep[cls._pos[1]][cls._pos[0]+i]
             if  not isinstance(currentSquare, Empty):
                 if currentSquare.get_colour() != cls._colour:
