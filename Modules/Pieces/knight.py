@@ -18,12 +18,12 @@ class Knight(Piece):
             if (cls._pos[0]*direction) >= horizontal_limit:
                 # when both sides are multiplied by -1 the inequality is flipped
                 if cls._pos[1] >= 1:
-                    far_upper = board._rep[cls._pos[1]-1][cls._pos[0]-2*direction]
+                    far_upper = board._rep[cls._pos[1]-1*direction][cls._pos[0]-2*direction]
                     if isinstance(far_upper, Empty) or far_upper.get_colour() != cls._colour:
                         # far left upper square is either empty or an enemy piece
                         legal_moves.append(far_upper._pos)
                 
-                if cls._pos[1] <= 6:
+                if cls._pos[1] > 0 and cls._pos[1] <= 6:    
                     far_lower = board._rep[cls._pos[1]+1*direction][cls._pos[0]-2*direction]
                     if isinstance(far_lower, Empty) or far_lower.get_colour() != cls._colour:
                         # far left lower square is either empty or an enemy piece
@@ -40,7 +40,7 @@ class Knight(Piece):
                 
                 if cls._pos[0] <= 6:
                     right_square = board._rep[cls._pos[1]-2*direction][cls._pos[0]+1]
-                    if isinstance(right_square, Empty) or left_square.get_colour() != cls._colour:
+                    if isinstance(right_square, Empty) or right_square.get_colour() != cls._colour:
                         legal_moves.append(right_square._pos)
         
         horizontal_checker(1)

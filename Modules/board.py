@@ -1,4 +1,5 @@
 from Modules.Pieces import *
+from Modules.misc import convert_pos
 
 class Board:
 
@@ -82,6 +83,31 @@ class Board:
                 if not isinstance(curPiece, Empty) and curPiece.get_colour() == cls._turn:
                     legal_moves[curPiece] = curPiece.get_legal_moves(cls)
         return legal_moves
+    
+    def update_position(cls, piecePosition) -> None:
+        movingPiece = cls.get_piece(piecePosition)
+        legal_moves = movingPiece.get_legal_moves(cls)
+        print("Select move: ", legal_moves)
+        while True:
+            selected_move = input("Please select a xy: ")                     
+            selected_move = convert_pos([selected_move[0],int(selected_move[1])])
+            if selected_move in legal_moves:
+                break
+        targetPiece = cls._rep[selected_move[1]][selected_move[0]]
+        targetPiecePositon = targetPiece.get_position()
+        if isinstance(targetPiece, Empty):
+            cls._rep[targetPiecePositon[1]][targetPiecePositon[0]], cls._rep[movingPiece._pos[1]][movingPiece._pos[0]] = cls._rep[movingPiece._pos[1]][movingPiece._pos[0]],cls._rep[targetPiecePositon[1]][targetPiecePositon[0]]
+            temp = targetPiecePositon
+            targetPiece.set_pos([movingPiece._pos[0],movingPiece._pos[1]])
+            movingPiece.set_pos([temp[0], temp[1]])
+        else:
+            tempPiece = Empty(pos=[movingPiece._pos[0],movingPiece._pos[1]])
+            cls._rep[movingPiece._pos[1]][movingPiece._pos[0]] = tempPiece
+            cls._rep[targetPiecePositon[1]][targetPiecePositon[0]] = movingPiece
+            movingPiece.set_pos(targetPiecePositon)        
+            
+            
+        
 
 
     def generate_piece(cls, piece: str) -> Piece:

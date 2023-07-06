@@ -39,12 +39,12 @@ class Pawn(Piece):
         right_square = None
         if cls._pos[0] > 0:
             left_square = board._rep[cls._pos[1]][cls._pos[0]-1] 
-            if isinstance(left_square, Pawn) and left_square in board.get_en_passanters() and left_square.get_colour() != cls._colour:
+            if isinstance(left_square, Pawn) and left_square in board.get_en_passant_list() and left_square.get_colour() != cls._colour:
                 legal_moves.append(board._rep[cls._pos[1]+direction][cls._pos[0]-1])
         
         if cls._pos[0] < 7:
             right_square = board._rep[cls._pos[1]][cls._pos[0]+1]
-            if isinstance(right_square, Pawn) and right_square in board.get_en_passanters() and right_square.get_colour() != cls._colour:
+            if isinstance(right_square, Pawn) and right_square in board.get_en_passant_list() and right_square.get_colour() != cls._colour:
                 legal_moves.append(board._rep[cls._pos[1]+direction][cls._pos[0]+1])
         
         return legal_moves

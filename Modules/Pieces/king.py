@@ -106,27 +106,3 @@ class King(Piece):
         return legal_moves
     
 
-    def update_position(cls, legal_moves, board) -> None:
-        print("Select move: ", legal_moves)
-        while True:
-            selected_move_x = input("Please select a x: ")
-            selected_move_y = input("please, select a y: ")
-            
-            selected_move = Modules.misc.convert_pos([selected_move_x,int(selected_move_y)])
-            if selected_move in legal_moves:
-                break
-        targetPiece = board._rep[selected_move[1]][selected_move[0]]
-        targetPiecePositon = targetPiece.get_position()
-        if isinstance(targetPiece, Empty):
-            board._rep[targetPiecePositon[1]][targetPiecePositon[0]], board._rep[cls._pos[1]][cls._pos[0]] = board._rep[cls._pos[1]][cls._pos[0]],board._rep[targetPiecePositon[1]][targetPiecePositon[0]]
-            temp = targetPiecePositon
-            targetPiece.set_pos(cls._pos)
-            cls.set_pos([temp[0], temp[1]])
-        else:
-            tempPiece = Empty(pos=[cls._pos[0],cls._pos[1]])
-            board._rep[cls._pos[1]][cls._pos[0]] = tempPiece
-            board._rep[targetPiecePositon[1]][targetPiecePositon[0]] = cls
-            cls.set_pos(targetPiecePositon)        
-            
-            
-        
