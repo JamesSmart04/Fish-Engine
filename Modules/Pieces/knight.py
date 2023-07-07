@@ -15,16 +15,17 @@ class Knight(Piece):
             # -1 = right, 1 = left (ik its confusing lol shut up mosh go away)
             # checking horizontal to check if the knight can move far in that direction
             horizontal_limit = 2 if direction == 1 else -5
+
             if (cls._pos[0]*direction) >= horizontal_limit:
                 # when both sides are multiplied by -1 the inequality is flipped
                 if cls._pos[1] >= 1:
-                    far_upper = board._rep[cls._pos[1]-1*direction][cls._pos[0]-2*direction]
+                    far_upper = board._rep[cls._pos[1]-1][cls._pos[0]-2*direction]
                     if isinstance(far_upper, Empty) or far_upper.get_colour() != cls._colour:
                         # far left upper square is either empty or an enemy piece
                         legal_moves.append(far_upper._pos)
                 
                 if cls._pos[1] > 0 and cls._pos[1] <= 6:    
-                    far_lower = board._rep[cls._pos[1]+1*direction][cls._pos[0]-2*direction]
+                    far_lower = board._rep[cls._pos[1]+1][cls._pos[0]-2*direction]
                     if isinstance(far_lower, Empty) or far_lower.get_colour() != cls._colour:
                         # far left lower square is either empty or an enemy piece
                         legal_moves.append(far_lower._pos)

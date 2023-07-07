@@ -15,6 +15,6 @@ class main():
     #yes i do 
         
 if __name__ == "__main__":
-    game = main("rnbqkbnr/pppppppp/8/8/8/N6N/P1PPPPPP/RPBQKB1R b KQkq - 0 1") 
- 
+    game = main()
+
 #TODO Make gameplay loop, and figure out how to feed AI, back of our mind (castling, evaulate board, evaulate position)
