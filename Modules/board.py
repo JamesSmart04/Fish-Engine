@@ -1,5 +1,6 @@
 from Modules.Pieces import *
 from Modules.misc import convert_pos, convert_pos_to_string
+import copy
 
 class Board:
 
@@ -152,19 +153,28 @@ class Board:
         
         
         legal_moves = cls.get_legal_moves()
-        print("Select a piece to move: ", legal_moves)
+        player_legal_moves = copy.deepcopy(legal_moves)
+        #making player legal moves| algebraic notation  
+        for i in player_legal_moves:
+            for j in range(len(player_legal_moves[i])):                
+                player_legal_moves[i][j] = convert_pos_to_string(player_legal_moves[i][j])
+
+
+        print("Select a piece to move: ", player_legal_moves)
 
         while True:
             pos_of_moving_piece = input("Please select a square: ")
             if pos_of_moving_piece in legal_moves:
                 break
-        piece_legal_moves = legal_moves[pos_of_moving_piece]
+        piece_legal_moves = player_legal_moves[pos_of_moving_piece]
         print(f"legal moves: {piece_legal_moves}")
         
         moving_piece = cls.get_piece(convert_pos(pos_of_moving_piece))
         while True:
             target_piece = input("please select a square to move to: ")
-            if convert_pos(target_piece) in piece_legal_moves:
+            print(convert_pos(target_piece))
+            print(legal_moves[pos_of_moving_piece])
+            if convert_pos(target_piece) in legal_moves[pos_of_moving_piece]:
                 target_piece = cls.get_piece(convert_pos(target_piece))
                 break
 
@@ -199,11 +209,40 @@ class Board:
         temp = target_piece_position
         target_piece.set_pos([moving_piece._pos[0],moving_piece._pos[1]])
         moving_piece.set_pos([temp[0], temp[1]])
-        
+        promoRank = 7 if cls._turn == 1 else 0
         cls._turn = cls._turn*-1
         
+        if isinstance(moving_piece, Pawn) and moving_piece.get_position()[1] == promoRank:
+            cls.pawn_promotion(moving_piece)
+
         # if the next turn is black then the black pawn list needs to be cleared, else clear the other one
         if cls.get_turn() == "black":
             cls.clear_black_en_passant_list()
         else:
             cls.clear_white_en_passant_list()
+    def pawn_promotion(cls, promotion_pawn):
+        #please select a piece
+        
+        promo_dict = {
+            1 : Queen(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
+            2 : Rook(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
+            3 : Bishop(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
+            4 : Knight(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position())
+        }
+        for i in promo_dict:
+            print(f'|{i} : {str(promo_dict[i])}', end="| ")
+        print("\ninput the number of the piece you want to promote to")
+        while True:
+            choice = input("Please choose a number: ")
+            try:
+                choice = int(choice)
+            except Exception as e: 
+                print("enter a valid number")
+            if choice in promo_dict:
+                cls._rep[promotion_pawn.get_position()[1]][promotion_pawn.get_position()[0]] = promo_dict[choice]
+                return
+            else:
+                print("choose from the list above")
+
+
+            

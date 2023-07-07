@@ -3,7 +3,7 @@ from .queen import Queen
 from .bishop import Bishop
 from .empty import Empty
 from .rook import Rook
-import Modules.misc
+from Modules.misc import convert_pos_to_string
 class King(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
         super().__init__(colour, pos)
@@ -80,6 +80,9 @@ class King(Piece):
         #making sure the king isn't at the top of the board
         legal_moves = []
 
+        #recording for player
+        player_legal_moves = []
+
         for i in [-1,1]:
             if ((cls._pos[0]+i >= 0 and cls._pos[0]+i <= 7) 
             and (isinstance(board._rep[cls._pos[1]][cls._pos[0]+i], Empty) 
@@ -101,6 +104,7 @@ class King(Piece):
                 and (isinstance(board._rep[cls._pos[1] + 1][cls._pos[0]+i], Empty) 
                 or board._rep[cls._pos[1] + 1][cls._pos[0]+i].get_colour() != cls._colour)):
                     legal_moves.append(board._rep[cls._pos[1] + 1][cls._pos[0]+i].get_position())
+
         
 
         return legal_moves

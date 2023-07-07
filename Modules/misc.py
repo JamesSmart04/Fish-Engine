@@ -8,13 +8,15 @@ def convert_pos(pos:list) -> list:
         alpha_dict[alpharange[i]] = i
     row = int(pos[1])
     column = pos[0]
-    if column in alpha_dict and row >= 1 and row < 8:
+    if column in alpha_dict and row >= 1 and row <= 8:
         return [alpha_dict[column],8-row]
 
     else:
         return pos
     
 def convert_pos_to_string(pos:list) -> str:
+    if not pos:
+        return ""
     alpharange = "abcdefgh"
     num_dict = {}
     row = pos[1]
