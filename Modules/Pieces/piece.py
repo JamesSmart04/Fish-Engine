@@ -9,9 +9,7 @@ class Piece:
         return cls._colour
     
     def get_position(cls) -> list:
-        return cls._pos
-        
-         
+        return cls._pos         
 
     def set_colour(cls, colour) -> None:
         cls._colour = colour

@@ -205,15 +205,56 @@ class Board:
             = \
         cls._rep[moving_piece._pos[1]][moving_piece._pos[0]],cls._rep[target_piece_position[1]][target_piece_position[0]]
 
+        #logic for castling
+        if isinstance(moving_piece, King):
+            difference = target_piece.get_position()[0] - moving_piece.get_position()[0]
+            if abs(difference)>1: #king is trying to castle
+                if difference < 0: #Queen side castling, only need to update the position of the rook
+                    rook_to_move = cls._rep[moving_piece.get_position()[1]][0]
+                    rook_to_move.set_pos([3,moving_piece.get_position()[1]])
+                    cls._rep[moving_piece.get_position()[1]][0], cls._rep[moving_piece.get_position()[1]][3] = cls._rep[moving_piece.get_position()[1]][3], cls._rep[moving_piece.get_position()[1]][0]
+                    cls._rep[moving_piece.get_position()[1]][0].set_pos([0,moving_piece.get_position()[1]])
+
+                else: #king side castling
+                    rook_to_move = cls._rep[moving_piece.get_position()[1]][7]
+                    rook_to_move.set_pos([5,moving_piece.get_position()[1]])
+                    cls._rep[moving_piece.get_position()[1]][7], cls._rep[moving_piece.get_position()[1]][5] = cls._rep[moving_piece.get_position()[1]][5], cls._rep[moving_piece.get_position()[1]][7]
+                    cls._rep[moving_piece.get_position()[1]][7].set_pos([7,moving_piece.get_position()[1]])
+                 
+            
+            
+            #amking castiling unavaialbe for colour as the king has moved
+            if cls.get_turn() == "white":
+                cls._white_castling_availibility = [0,0]
+            else: 
+                cls._black_castling_availibility =[0,0]
+
+        
+        #chaninging castling availibility
+
+        if isinstance(moving_piece,Rook):
+                if moving_piece.get_position()[0] == 0:
+                    index = 1
+                elif moving_piece.get_position()[0] == 7:
+                    index =  0
+                if cls.get_turn() == "white":
+                    cls._white_castling_availibility[index] = 0
+                else:
+                    cls._black_castling_availibility[index] = 0
         # changing the stored positions of the pieces involved in the move :)
         temp = target_piece_position
         target_piece.set_pos([moving_piece._pos[0],moving_piece._pos[1]])
         moving_piece.set_pos([temp[0], temp[1]])
+
+
         promoRank = 7 if cls._turn == 1 else 0
-        cls._turn = cls._turn*-1
-        
+
         if isinstance(moving_piece, Pawn) and moving_piece.get_position()[1] == promoRank:
             cls.pawn_promotion(moving_piece)
+
+
+
+        cls._turn = cls._turn*-1 #changing to opposite turn
 
         # if the next turn is black then the black pawn list needs to be cleared, else clear the other one
         if cls.get_turn() == "black":
