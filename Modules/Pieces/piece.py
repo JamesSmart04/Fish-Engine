@@ -1,4 +1,5 @@
 import Modules.misc
+
 class Piece:
     def __init__(self, colour="white", pos=[0,0]) -> None:
         self._pos = pos
@@ -22,4 +23,3 @@ class Piece:
             return cls._piece.lower()
         else:
             return cls._piece.upper()
-        

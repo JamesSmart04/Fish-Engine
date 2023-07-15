@@ -8,6 +8,8 @@ class Board:
         self.set_board(FEN)
         self.black_en_passant_list = []
         self.white_en_passant_list = []
+        self._white_checked = False
+        self._black_checked = False
 
 
     def __str__(cls) -> str: #prints board to console and returns FEN
@@ -19,7 +21,7 @@ class Board:
         return cls.export_FEN()
 
 
-    def export_FEN(cls) -> str:
+    def export_FEN(cls) -> str: #TODO update w/ castling availbility and turn, not quite halfmove clock yet, also need to read possible en-passant squares
         FEN = ""
         for i in range(len(cls._rep)):
             j = 0
@@ -56,16 +58,29 @@ class Board:
     def get_black_en_passant_list(cls) -> list:
         return cls.black_en_passant_list
     
-    
     def get_white_en_passant_list(cls) -> list:
         return cls.white_en_passant_list
-
-
+    
+    def get_white_checked(cls) -> bool:
+        return cls._white_checked
+    
+    def get_black_checked(cls) -> bool:
+        return cls._black_checked
+    
     def get_turn(cls):
         return "white" if cls._turn == -1 else "black"
 
 
     def get_legal_moves(cls):
+        cls.set_king_attacked_squares()
+        #checking if the king is in check
+        cur_king = cls._white_king if cls._turn == -1 else cls._black_king
+        if cur_king.check_attacked_squares(cur_king._pos,cls, cur_king._colour, False) != [[],[],[],[],[]]:
+            if cls._turn == -1:
+                cls._white_checked = True
+            else:
+                cls._black_checked = True 
+
         legal_moves = {}
         for i in range(len(cls._rep)):
             for j in range(len(cls._rep[0])):
@@ -74,7 +89,14 @@ class Board:
                     legal_moves[convert_pos_to_string(curPiece.get_position())] = curPiece.get_legal_moves(cls)
         return legal_moves
 
-
+    def set_king_attacked_squares(cls) -> None:
+        if cls.get_turn() == "white":
+            cls._king_attacked_squares = cls._white_king.check_attacked_squares(cls._white_king.get_position(),cls,cls._white_king.get_colour())
+        else:
+            cls._king_attacked_squares = cls._black_king.check_attacked_squares(cls._black_king.get_position(),cls,cls._white_king.get_colour())
+    def get_king_attacked_squares(cls):
+        return cls._king_attacked_squares
+    
     def clear_white_en_passant_list(cls) -> None:
         cls.white_en_passant_list = []
     
@@ -119,9 +141,9 @@ class Board:
                 temp_piece.set_pos([len(rep[-1]),len(rep)-1])
                 if isinstance(temp_piece, King): #storing king posito
                     if temp_piece._colour == "white":
-                        cls._white_king_position = temp_piece._pos
+                        cls._white_king = temp_piece
                     else:
-                        cls._black_king_position = temp_piece._pos
+                        cls._black_king  = temp_piece
 
                 rep[-1].append(temp_piece)
         cls._rep = rep
@@ -148,38 +170,10 @@ class Board:
             return output
 
 
-    def update_position(cls) -> None:
-        print(cls)
-        
-        
+    def update_position(cls,moving_piece, target_piece) -> None:  
         legal_moves = cls.get_legal_moves()
-        player_legal_moves = copy.deepcopy(legal_moves)
-        #making player legal moves| algebraic notation  
-        for i in player_legal_moves:
-            for j in range(len(player_legal_moves[i])):                
-                player_legal_moves[i][j] = convert_pos_to_string(player_legal_moves[i][j])
-
-
-        print("Select a piece to move: ", player_legal_moves)
-
-        while True:
-            pos_of_moving_piece = input("Please select a square: ")
-            if pos_of_moving_piece in legal_moves:
-                break
-        piece_legal_moves = player_legal_moves[pos_of_moving_piece]
-        print(f"legal moves: {piece_legal_moves}")
-        
-        moving_piece = cls.get_piece(convert_pos(pos_of_moving_piece))
-        while True:
-            target_piece = input("please select a square to move to: ")
-            print(convert_pos(target_piece))
-            print(legal_moves[pos_of_moving_piece])
-            if convert_pos(target_piece) in legal_moves[pos_of_moving_piece]:
-                target_piece = cls.get_piece(convert_pos(target_piece))
-                break
-
+       
         target_piece_position = target_piece.get_position()
-
         if not isinstance(target_piece, Empty):
             # if the targetted piece is not empty (it is an enemy piece) then replace it with an empty piece
             temp_piece = Empty(pos=[moving_piece._pos[0],moving_piece._pos[1]])
@@ -195,7 +189,7 @@ class Board:
             cls._rep[en_passant_piece._pos[1]][en_passant_piece._pos[0]] = temp_piece
 
 
-        if isinstance(moving_piece, Pawn) and abs(target_piece.get_position()[1] - convert_pos(pos_of_moving_piece)[1]) > 1:
+        if isinstance(moving_piece, Pawn) and abs(target_piece.get_position()[1] - moving_piece.get_position[1]) > 1:
             #adding to en passant list if the piece moves 2 squares forward
             temp = [moving_piece.get_position()[0], moving_piece.get_position()[1]+(direction*2)]
             cls.add_to_black_en_passant_list(temp) if direction == 1 else cls.add_to_white_en_passant_list(temp)
@@ -233,14 +227,17 @@ class Board:
         #chaninging castling availibility
 
         if isinstance(moving_piece,Rook):
+                
+                index =-1
                 if moving_piece.get_position()[0] == 0:
                     index = 1
                 elif moving_piece.get_position()[0] == 7:
                     index =  0
-                if cls.get_turn() == "white":
-                    cls._white_castling_availibility[index] = 0
-                else:
-                    cls._black_castling_availibility[index] = 0
+                if index != -1:
+                    if cls.get_turn() == "white":
+                        cls._white_castling_availibility[index] = 0
+                    else:
+                        cls._black_castling_availibility[index] = 0
         # changing the stored positions of the pieces involved in the move :)
         temp = target_piece_position
         target_piece.set_pos([moving_piece._pos[0],moving_piece._pos[1]])
@@ -261,6 +258,8 @@ class Board:
             cls.clear_black_en_passant_list()
         else:
             cls.clear_white_en_passant_list()
+        
+        print(cls)
     def pawn_promotion(cls, promotion_pawn):
         #please select a piece
         
