@@ -211,7 +211,7 @@ class King(Piece):
                 legal_moves.append(i)
 
         
-        return legal_moves
+        return legal_moves if legal_moves != [] else None
                 
                             
     

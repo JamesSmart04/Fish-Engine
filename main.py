@@ -12,13 +12,18 @@ class main():
         #usinag a dictionary {key: position of piece: value legal_moves}
         #printing board initally
         print(self.board)
-        while True:
+        print(self.board._game_state)
+        while True and self.board.get_game_state() != "over":
             legal_moves = self.board.get_legal_moves()
             player_legal_moves = copy.deepcopy(legal_moves)
             #making player legal moves| algebraic notation  
             for i in player_legal_moves:
-                for j in range(len(player_legal_moves[i])):                
-                    player_legal_moves[i][j] = Modules.misc.convert_pos_to_string(player_legal_moves[i][j])
+
+                if player_legal_moves[i]:
+                    for j in range(len(player_legal_moves[i])):                
+                        player_legal_moves[i][j] = Modules.misc.convert_pos_to_string(player_legal_moves[i][j])
+                else:
+                    player_legal_moves[i] = None
 
 
             print("Select a piece to move: ", player_legal_moves)
@@ -47,7 +52,7 @@ class main():
         pass
 
 if __name__ == "__main__":
-    game = main("8/5r2/5N2/5K2/8/k7/8/8 w - - 0 1")
+    game = main("4K3/8/8/8/8/1R6/R7/7k w - - 0 1")
 
 #TODO figure out how to feed AI, back of our mind (evaulate board, evaulate position); check en passant interactions w/ new legal move filtering, stalemate, checkmate, 50 move clock
 

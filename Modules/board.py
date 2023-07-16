@@ -10,6 +10,7 @@ class Board:
         self.white_en_passant_list = []
         self._white_checked = False
         self._black_checked = False
+        self._game_state = "active"
 
 
     def __str__(cls) -> str: #prints board to console and returns FEN
@@ -69,6 +70,12 @@ class Board:
     
     def get_turn(cls):
         return "white" if cls._turn == -1 else "black"
+    
+    def get_game_state(cls):
+        return cls._game_state
+    
+    def set_game_state(cls,state):
+        cls._game_state = state
 
 
     def get_legal_moves(cls):
@@ -170,9 +177,12 @@ class Board:
             return output
 
 
-    def update_position(cls,moving_piece, target_piece) -> None:  
-        legal_moves = cls.get_legal_moves()
-       
+    def update_position(cls,moving_piece, target_piece) -> None: 
+
+        if cls._game_state == "over":
+            return
+        
+        legal_moves = cls.get_legal_moves()     
         target_piece_position = target_piece.get_position()
         if not isinstance(target_piece, Empty):
             # if the targetted piece is not empty (it is an enemy piece) then replace it with an empty piece
@@ -249,6 +259,21 @@ class Board:
         if isinstance(moving_piece, Pawn) and moving_piece.get_position()[1] == promoRank:
             cls.pawn_promotion(moving_piece)
 
+        #chekcing if the game should end 
+        cur_check = cls._white_checked if cls._turn == -1 else cls._black_checked
+        game_over = True
+        for i in legal_moves:
+            if legal_moves[i] != None:
+                game_over == False
+
+                
+        if game_over == True:
+            if cur_check == True:
+                print("Checkmate")
+            else:
+                print("Stalemate")
+            cls.set_game_state("over")
+        
 
 
         cls._turn = cls._turn*-1 #changing to opposite turn
