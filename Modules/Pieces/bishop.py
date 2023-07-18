@@ -46,7 +46,7 @@ class Bishop(Piece):
         while isinstance(currentSquare, Empty) and cls._pos[0]+i > 0 and cls._pos[1]+j < 7 :
             i -= 1
             j += 1
-            currentSquare = board._rep[cls._pos[1]][cls._pos[0]+i]
+            currentSquare = board._rep[cls._pos[1]+j][cls._pos[0]+i]
             if  not isinstance(currentSquare, Empty):
                 if currentSquare.get_colour() != cls._colour:
                     legal_moves.append(currentSquare._pos)
@@ -57,10 +57,10 @@ class Bishop(Piece):
         i = 0
         j = 0 
         currentSquare = Empty()
-        while isinstance(currentSquare, Empty) and cls._pos[0]+i < 7 and cls._pos[1] < 7:
+        while isinstance(currentSquare, Empty) and cls._pos[0]+i < 7 and cls._pos[1]+j < 7:
             i += 1
             j += 1
-            currentSquare = board._rep[cls._pos[1]][cls._pos[0]+i]
+            currentSquare = board._rep[cls._pos[1]+j][cls._pos[0]+i]
             if  not isinstance(currentSquare, Empty):
                 if currentSquare.get_colour() != cls._colour:
                     legal_moves.append(currentSquare._pos)

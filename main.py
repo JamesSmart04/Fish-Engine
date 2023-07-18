@@ -14,7 +14,7 @@ class main():
         print(self.board)
         print(self.board._game_state)
         while True and self.board.get_game_state() != "over":
-            legal_moves = self.board.get_legal_moves()
+            legal_moves = self.board._legal_moves
             player_legal_moves = copy.deepcopy(legal_moves)
             #making player legal moves| algebraic notation  
             for i in player_legal_moves:
@@ -45,14 +45,14 @@ class main():
                     break
 
             self.board.update_position(moving_piece,target_piece)
-
+        print(self.board)   
 
 
     def __str__(self) -> str:
         pass
 
 if __name__ == "__main__":
-    game = main("4K3/8/8/8/8/1R6/R7/7k w - - 0 1")
+    game = main("rn2kbnr/ppp2ppp/8/3p4/3NpP1P/4P3/PPPP4/RNBK3q w kq h3 0 1")
 
 #TODO figure out how to feed AI, back of our mind (evaulate board, evaulate position); check en passant interactions w/ new legal move filtering, stalemate, checkmate, 50 move clock
 

@@ -5,12 +5,14 @@ import copy
 class Board:
 
     def __init__(self, FEN: str) -> None:
-        self.set_board(FEN)
-        self.black_en_passant_list = []
-        self.white_en_passant_list = []
         self._white_checked = False
         self._black_checked = False
+        self.black_en_passant_list = []
+        self.white_en_passant_list = []
         self._game_state = "active"
+        self.set_board(FEN)
+
+
 
 
     def __str__(cls) -> str: #prints board to console and returns FEN
@@ -87,7 +89,6 @@ class Board:
                 cls._white_checked = True
             else:
                 cls._black_checked = True 
-
         legal_moves = {}
         for i in range(len(cls._rep)):
             for j in range(len(cls._rep[0])):
@@ -100,7 +101,7 @@ class Board:
         if cls.get_turn() == "white":
             cls._king_attacked_squares = cls._white_king.check_attacked_squares(cls._white_king.get_position(),cls,cls._white_king.get_colour())
         else:
-            cls._king_attacked_squares = cls._black_king.check_attacked_squares(cls._black_king.get_position(),cls,cls._white_king.get_colour())
+            cls._king_attacked_squares = cls._black_king.check_attacked_squares(cls._black_king.get_position(),cls,cls._black_king.get_colour())
     def get_king_attacked_squares(cls):
         return cls._king_attacked_squares
     
@@ -155,6 +156,7 @@ class Board:
                 rep[-1].append(temp_piece)
         cls._rep = rep
         cls._turn = turn
+        cls._legal_moves = cls.get_legal_moves()
 
 
     def generate_piece(cls, piece: str) -> Piece:
@@ -179,10 +181,6 @@ class Board:
 
     def update_position(cls,moving_piece, target_piece) -> None: 
 
-        if cls._game_state == "over":
-            return
-        
-        legal_moves = cls.get_legal_moves()     
         target_piece_position = target_piece.get_position()
         if not isinstance(target_piece, Empty):
             # if the targetted piece is not empty (it is an enemy piece) then replace it with an empty piece
@@ -199,7 +197,7 @@ class Board:
             cls._rep[en_passant_piece._pos[1]][en_passant_piece._pos[0]] = temp_piece
 
 
-        if isinstance(moving_piece, Pawn) and abs(target_piece.get_position()[1] - moving_piece.get_position[1]) > 1:
+        if isinstance(moving_piece, Pawn) and abs(target_piece.get_position()[1] - moving_piece.get_position()[1]) > 1:
             #adding to en passant list if the piece moves 2 squares forward
             temp = [moving_piece.get_position()[0], moving_piece.get_position()[1]+(direction*2)]
             cls.add_to_black_en_passant_list(temp) if direction == 1 else cls.add_to_white_en_passant_list(temp)
@@ -259,24 +257,45 @@ class Board:
         if isinstance(moving_piece, Pawn) and moving_piece.get_position()[1] == promoRank:
             cls.pawn_promotion(moving_piece)
 
+
+
+        cls._turn = cls._turn*-1 #changing to opposite turn
+        cls._white_checked = False
+        cls._black_checked = False
+
+        cls._legal_moves = cls.get_legal_moves()   
+        print(cls._legal_moves)  
         #chekcing if the game should end 
         cur_check = cls._white_checked if cls._turn == -1 else cls._black_checked
         game_over = True
-        for i in legal_moves:
-            if legal_moves[i] != None:
-                game_over == False
-
+        for i in cls._legal_moves.values():
+            if i != None:
+                game_over = False
                 
-        if game_over == True:
-            if cur_check == True:
+                
+        cur_king = cls._white_king if cls._turn == -1 else cls._black_king
+        if cur_king.check_attacked_squares(cur_king._pos,cls, cur_king._colour, False) != [[],[],[],[],[]]:
+            if cls._turn == -1:
+                cls._white_checked = True
+            else:
+                cls._black_checked = True    
+
+        if game_over:
+            print("ran")
+            if cur_check:
                 print("Checkmate")
             else:
                 print("Stalemate")
             cls.set_game_state("over")
         
+        if cls._game_state == "over":
+            return
+        
 
 
-        cls._turn = cls._turn*-1 #changing to opposite turn
+
+
+
 
         # if the next turn is black then the black pawn list needs to be cleared, else clear the other one
         if cls.get_turn() == "black":

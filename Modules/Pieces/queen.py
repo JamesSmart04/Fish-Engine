@@ -11,8 +11,11 @@ class Queen(Piece):
     def get_legal_moves(cls, board):
         straight_moves = Rook(cls._colour, cls._pos).get_legal_moves(board)
         diagonal_moves = Bishop(cls._colour, cls._pos).get_legal_moves(board)
+        all_moves = []
+        if straight_moves:
+            all_moves += straight_moves
 
-        for move in straight_moves:
-            diagonal_moves.append(move)
-        return diagonal_moves
+        if diagonal_moves:
+            all_moves += diagonal_moves
+        return all_moves if all_moves != [] else None
 

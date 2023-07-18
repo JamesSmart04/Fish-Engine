@@ -37,7 +37,7 @@ class King(Piece):
                     seen_enemy = False
                     file_squares = []
                     while target_piece._pos[1]+y >= 0 and target_piece._pos[1]+y <=7 and target_piece._pos[0]+x >= 0 and target_piece._pos[0]+ x <= 7:
-                        current_piece : Piece = board._rep[target_piece._pos[1]+y][target_piece._pos[0]+x]
+                        current_piece = board._rep[target_piece._pos[1]+y][target_piece._pos[0]+x]
                         file_squares.append(current_piece.get_position())
                         isEmpty = isinstance(current_piece, Empty) 
                         
@@ -49,7 +49,7 @@ class King(Piece):
                                 return file_squares
                             elif directionX != 0 and directionY != 0 and isinstance(current_piece, Bishop): 
                                 return file_squares
-                            elif isinstance(current_piece, Rook):
+                            elif isinstance(current_piece, Rook) and (directionX == 0) ^ (directionY == 0):
                                 return file_squares
                             else:
                                 return []
@@ -207,10 +207,10 @@ class King(Piece):
         attacked_squares  = cls.check_attacked_squares(cls.get_position(),board,cls._colour) 
         for i in psuedo_legal_moves:
             current_square = board._rep[i[1]][i[0]]
-            if isinstance(current_square,Empty) and cls.check_attacked_squares(current_square.get_position(), board, cls.get_colour(), False) == [[],[],[],[],[]]: #going through the kings legal moves and seeing if it is attacked
+            print(convert_pos_to_string(i),cls.check_attacked_squares(current_square.get_position(), board, cls.get_colour(), False))
+            if current_square.get_colour() != cls._colour and cls.check_attacked_squares(current_square.get_position(), board, cls.get_colour(), False) == [[],[],[],[],[]]: #going through the kings legal moves and seeing if it is attacked
                 legal_moves.append(i)
-
-        
+        print(f'king {legal_moves}')
         return legal_moves if legal_moves != [] else None
                 
                             

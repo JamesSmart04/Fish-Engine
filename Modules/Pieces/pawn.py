@@ -80,6 +80,6 @@ class Pawn(Piece):
                     return legal_moves if legal_moves != [] else None      
                 
         else:
-            legal_moves =pseudo_legal_moves
+            legal_moves = pseudo_legal_moves
         
         return legal_moves if legal_moves != [] else None
