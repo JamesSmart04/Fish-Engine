@@ -23,4 +23,10 @@ def convert_pos_to_string(pos:list) -> str:
     column = pos[0]
     for i in range(len(alpharange)):
         num_dict[i] = alpharange[i]
-    return num_dict[column]+str(8-row)
+
+    if len(pos) == 2:
+        return num_dict[column]+str(8-row)
+    elif len(pos) == 3:
+        promo_list = ['q','n','b','r'] if pos[1] == 7 else ['Q','N','B','R']
+        return num_dict[column]+str(8-row)+promo_list[pos[2]]
+    

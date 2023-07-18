@@ -1,5 +1,7 @@
 from .piece import Piece
 from .empty import Empty
+import copy
+
 
 class Pawn(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
@@ -48,7 +50,17 @@ class Pawn(Piece):
             right_square = board._rep[cls._pos[1]][cls._pos[0]+1]
             if isinstance(right_square, Pawn) and right_square.get_position() in en_passant_list:
                 legal_moves.append(board._rep[cls._pos[1]+direction][cls._pos[0]+1].get_position())
-        
+
+        back_rank = 0 if cls._colour == "white" else 7
+        for i in range(len(legal_moves)):
+            if legal_moves[i][1] == back_rank:
+                temp_copy = legal_moves[i]
+                legal_moves.pop(i)
+                for j in range(4):
+                    temp = copy.deepcopy(temp_copy)
+                    temp.append(j)
+                    legal_moves.append(temp)
+    
         return legal_moves
     
     def get_legal_moves(cls,board):

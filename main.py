@@ -13,38 +13,22 @@ class main():
         #printing board initally
         print(self.board)
         print(self.board._game_state)
-        while True and self.board.get_game_state() != "over":
+        while True and self.board.get_game_state() == "active":
+
             legal_moves = self.board._legal_moves
-            player_legal_moves = copy.deepcopy(legal_moves)
+            
+            player_legal_moves = legal_moves
             #making player legal moves| algebraic notation  
-            for i in player_legal_moves:
-
-                if player_legal_moves[i]:
-                    for j in range(len(player_legal_moves[i])):                
-                        player_legal_moves[i][j] = Modules.misc.convert_pos_to_string(player_legal_moves[i][j])
-                else:
-                    player_legal_moves[i] = None
-
 
             print("Select a piece to move: ", player_legal_moves)
 
             while True:
-                pos_of_moving_piece = input("Please select a square: ")
-                if pos_of_moving_piece in legal_moves:
+                move = input("Please select a square: ")
+                if move in legal_moves:
                     break
-            piece_legal_moves = player_legal_moves[pos_of_moving_piece]
-            print(f"legal moves: {piece_legal_moves}")
-            
-            moving_piece = self.board.get_piece(Modules.misc.convert_pos(pos_of_moving_piece))
-            while True:
-                target_piece = input("please select a square to move to: ")
-                print(Modules.misc.convert_pos(target_piece))
-                print(legal_moves[pos_of_moving_piece])
-                if Modules.misc.convert_pos(target_piece) in legal_moves[pos_of_moving_piece]:
-                    target_piece = self.board.get_piece(Modules.misc.convert_pos(target_piece))
-                    break
-
-            self.board.update_position(moving_piece,target_piece)
+                pass
+                
+            self.board.update_position(move)
         print(self.board)   
 
 
@@ -52,7 +36,7 @@ class main():
         pass
 
 if __name__ == "__main__":
-    game = main("rn2kbnr/ppp2ppp/8/3p4/3NpP1P/4P3/PPPP4/RNBK3q w kq h3 0 1")
+    game = main("6K1/8/8/8/8/8/RR6/7k w - - 0 1")
 
 #TODO figure out how to feed AI, back of our mind (evaulate board, evaulate position); check en passant interactions w/ new legal move filtering, stalemate, checkmate, 50 move clock
 

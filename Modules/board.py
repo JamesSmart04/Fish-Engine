@@ -53,7 +53,6 @@ class Board:
         """Takes an input of position (pos[0] = x, pos[1] = y) and returns piece object from board"""
         #pos[0] == horizontal, pos[1] == vertical
         if pos[0] < 0 or pos[0] > 7 or pos[1] < 0 or pos[1] > 7:
-            print(f'{pos} is invalid')
             return False
         return cls._rep[pos[1]][pos[0]]
 
@@ -95,6 +94,14 @@ class Board:
                 curPiece = cls._rep[i][j]              
                 if not isinstance(curPiece, Empty) and curPiece.get_colour() == cls.get_turn():
                     legal_moves[convert_pos_to_string(curPiece.get_position())] = curPiece.get_legal_moves(cls)
+        temp = []
+        for i in legal_moves:
+            if legal_moves[i]:
+                for j in legal_moves[i]:
+                    temp.append(i+convert_pos_to_string(j))
+            else:
+                continue
+        legal_moves = temp
         return legal_moves
 
     def set_king_attacked_squares(cls) -> None:
@@ -179,8 +186,15 @@ class Board:
             return output
 
 
-    def update_position(cls,moving_piece, target_piece) -> None: 
+    def update_position(cls,moveString) -> None: 
+        moving_piece = moveString[0:2]
+        target_piece = moveString[2:4]
+        if len(moveString) > 4:
+            promo = moveString[4]
 
+
+        moving_piece = cls.get_piece(convert_pos(moving_piece))
+        target_piece = cls.get_piece(convert_pos(target_piece))
         target_piece_position = target_piece.get_position()
         if not isinstance(target_piece, Empty):
             # if the targetted piece is not empty (it is an enemy piece) then replace it with an empty piece
@@ -222,7 +236,6 @@ class Board:
                     rook_to_move.set_pos([5,moving_piece.get_position()[1]])
                     cls._rep[moving_piece.get_position()[1]][7], cls._rep[moving_piece.get_position()[1]][5] = cls._rep[moving_piece.get_position()[1]][5], cls._rep[moving_piece.get_position()[1]][7]
                     cls._rep[moving_piece.get_position()[1]][7].set_pos([7,moving_piece.get_position()[1]])
-                 
             
             
             #amking castiling unavaialbe for colour as the king has moved
@@ -255,8 +268,7 @@ class Board:
         promoRank = 7 if cls._turn == 1 else 0
 
         if isinstance(moving_piece, Pawn) and moving_piece.get_position()[1] == promoRank:
-            cls.pawn_promotion(moving_piece)
-
+            cls.pawn_promotion(moving_piece,promo)
 
 
         cls._turn = cls._turn*-1 #changing to opposite turn
@@ -268,8 +280,7 @@ class Board:
         #chekcing if the game should end 
         cur_check = cls._white_checked if cls._turn == -1 else cls._black_checked
         game_over = True
-        for i in cls._legal_moves.values():
-            if i != None:
+        if cls._legal_moves != []:
                 game_over = False
                 
                 
@@ -281,22 +292,14 @@ class Board:
                 cls._black_checked = True    
 
         if game_over:
-            print("ran")
             if cur_check:
-                print("Checkmate")
+                cls.set_game_state("Checkmate")
             else:
-                print("Stalemate")
-            cls.set_game_state("over")
+                cls.set_game_state("Stalemate")
         
-        if cls._game_state == "over":
+        if cls._game_state != "active":
             return
         
-
-
-
-
-
-
         # if the next turn is black then the black pawn list needs to be cleared, else clear the other one
         if cls.get_turn() == "black":
             cls.clear_black_en_passant_list()
@@ -304,29 +307,17 @@ class Board:
             cls.clear_white_en_passant_list()
         
         print(cls)
-    def pawn_promotion(cls, promotion_pawn):
+    def pawn_promotion(cls, promotion_pawn,promoTo):
         #please select a piece
         
         promo_dict = {
-            1 : Queen(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
-            2 : Rook(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
-            3 : Bishop(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
-            4 : Knight(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position())
+            "q" : Queen(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
+            "r" : Rook(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
+            "b" : Bishop(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position()),
+            "n ": Knight(colour=promotion_pawn.get_colour(), pos = promotion_pawn.get_position())
         }
-        for i in promo_dict:
-            print(f'|{i} : {str(promo_dict[i])}', end="| ")
-        print("\ninput the number of the piece you want to promote to")
-        while True:
-            choice = input("Please choose a number: ")
-            try:
-                choice = int(choice)
-            except Exception as e: 
-                print("enter a valid number")
-            if choice in promo_dict:
-                cls._rep[promotion_pawn.get_position()[1]][promotion_pawn.get_position()[0]] = promo_dict[choice]
-                return
-            else:
-                print("choose from the list above")
+        cls._rep[promotion_pawn.get_position()[1]][promotion_pawn.get_position()[0]] = promo_dict[promoTo.lower()]
+        return
 
 
             

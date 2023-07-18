@@ -207,10 +207,8 @@ class King(Piece):
         attacked_squares  = cls.check_attacked_squares(cls.get_position(),board,cls._colour) 
         for i in psuedo_legal_moves:
             current_square = board._rep[i[1]][i[0]]
-            print(convert_pos_to_string(i),cls.check_attacked_squares(current_square.get_position(), board, cls.get_colour(), False))
             if current_square.get_colour() != cls._colour and cls.check_attacked_squares(current_square.get_position(), board, cls.get_colour(), False) == [[],[],[],[],[]]: #going through the kings legal moves and seeing if it is attacked
                 legal_moves.append(i)
-        print(f'king {legal_moves}')
         return legal_moves if legal_moves != [] else None
                 
                             
