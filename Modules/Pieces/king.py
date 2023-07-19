@@ -157,7 +157,8 @@ class King(Piece):
                 and (isinstance(board._rep[cls._pos[1] + 1][cls._pos[0]+i], Empty) 
                 or board._rep[cls._pos[1] + 1][cls._pos[0]+i].get_colour() != cls._colour)):
                     legal_moves.append(board._rep[cls._pos[1] + 1][cls._pos[0]+i].get_position())
-        if cls.get_position() == [4,7] or cls.get_position() == [4,0]:
+        cur_check = board._white_checked if cls._colour == "white" else board._black_checked
+        if not cur_check and cls.get_position() == [4,7] or cls.get_position() == [4,0]:
         #castiling
             if cls.get_colour() == "white":
                 king_side = bool(board._white_castling_availibility[0])
