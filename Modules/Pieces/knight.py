@@ -79,7 +79,10 @@ class Knight(Piece):
                     for j in pseudo_legal_moves:
                         if j in i:
                             legal_moves.append(j)
-                    return legal_moves if legal_moves != [] else None      
+                    return legal_moves if legal_moves != [] else None 
+                     
+            legal_moves = pseudo_legal_moves  
+                
                 
         else:
             legal_moves =pseudo_legal_moves

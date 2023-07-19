@@ -83,13 +83,15 @@ class Pawn(Piece):
                         legal_moves.append(i)
 
         #case 2: piece is pinned to king
-        elif attacked_squares != [[],[],[],[],[]]: #king is pinned
+        elif attacked_squares != [[],[],[],[],[]]:
+            
             for i in attacked_squares:
                 if cls._pos in i:
                     for j in pseudo_legal_moves:
                         if j in i:
                             legal_moves.append(j)
-                    return legal_moves if legal_moves != [] else None      
+                    return legal_moves if legal_moves != [] else None    
+            legal_moves = pseudo_legal_moves  
                 
         else:
             legal_moves = pseudo_legal_moves

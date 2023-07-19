@@ -27,8 +27,10 @@ class King(Piece):
         self._piece = "k"
     
     def check_attacked_squares(cls,pos,board, colour,isKing = True):
-                target_piece  = board.get_piece(pos)
+                # counter = 0
+                checked_list = []
                 def helper(directionX, directionY, board):
+                    # counter += 1
                     x = directionX
                     y = directionY
                     target_piece  = board.get_piece(pos)
@@ -44,7 +46,12 @@ class King(Piece):
                         if not isEmpty and current_piece.get_colour() != colour:
                             seen_enemy = True
 
-                        if seen_enemy == True: #if king is checked,
+                        if seen_enemy == True:
+                            # if seen_friend != True and counter%2 == 0 :
+                            #     checked_list.append(True)
+                            # else:
+                            #     checked_list.append(False)
+                        
                             if isinstance(current_piece, Queen):
                                 return file_squares
                             elif directionX != 0 and directionY != 0 and isinstance(current_piece, Bishop): 
@@ -158,6 +165,7 @@ class King(Piece):
                 or board._rep[cls._pos[1] + 1][cls._pos[0]+i].get_colour() != cls._colour)):
                     legal_moves.append(board._rep[cls._pos[1] + 1][cls._pos[0]+i].get_position())
         cur_check = board._white_checked if cls._colour == "white" else board._black_checked
+
         if not cur_check and cls.get_position() == [4,7] or cls.get_position() == [4,0]:
         #castiling
             if cls.get_colour() == "white":
