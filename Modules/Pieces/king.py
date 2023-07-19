@@ -92,17 +92,17 @@ class King(Piece):
 
                 #checking the two pawn moves
                 direction,backrank = (-1,0) if colour == "white" else (1,7)
-                if colour == "white":
-                    if pos[0] > 0  and pos[1] > backrank: #check top left for pawn:
-                        # print([pos[1]+direction,pos[0]-1])
-                        selected_piece = board._rep[pos[1]+direction][pos[0]-1]
-                        if isinstance(selected_piece, Pawn) and colour != selected_piece.get_colour():
-                            attacked_squares.append([pos[0]-1,pos[1]+direction])
-                    if pos[0] < 7 and pos[1] > backrank: #check top right for pawn:
-                        selected_piece = board._rep[pos[1]+direction][pos[0]+1]
-                        if isinstance(selected_piece, Pawn) and colour != selected_piece.get_colour():
-                            attacked_squares.append(selected_piece.get_position())
-                #getitng other attacked squares e.g, kinghts and pawns and king
+                # if colour == "white":
+                if pos[0] > 0  and pos[1]*-1*direction > backrank*-1*direction: #check top left for pawn:
+                    # print([pos[1]+direction,pos[0]-1])
+                    selected_piece = board._rep[pos[1]+direction][pos[0]-1]
+                    if isinstance(selected_piece, Pawn) and colour != selected_piece.get_colour():
+                        attacked_squares.append([pos[0]-1,pos[1]+direction])
+                if pos[0] < 7 and pos[1]*-1*direction > backrank*-1*direction: #check top right for pawn:
+                    selected_piece = board._rep[pos[1]+direction][pos[0]+1]
+                    if isinstance(selected_piece, Pawn) and colour != selected_piece.get_colour():
+                        attacked_squares.append(selected_piece.get_position())
+            #getitng other attacked squares e.g, kinghts and pawns and king
                 return [horizontal_squares,vertical_squares, negative_diagonal_squares,positive_diagonal_squares,attacked_squares]    
 
     def set_attacked_squares(cls, board):
