@@ -1,6 +1,6 @@
 from .piece import Piece
 from .empty import Empty
-
+import copy
 
 class Rook(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
@@ -71,7 +71,7 @@ class Rook(Piece):
     def get_legal_moves(cls,board):
         pseudo_legal_moves = cls.get_pseudo_legal_moves(board)
         king_checked = board._white_checked if cls._colour == "white" else board._black_checked
-        attacked_squares = board.get_king_attacked_squares()
+        attacked_squares = copy.deepcopy(board.get_king_attacked_squares())
         #fixing attacked squares ([] = pseudolegalmoves)
         legal_moves = []
 
