@@ -45,7 +45,7 @@ class Main():
         pass
 
 if __name__ == "__main__":
-    game = Main("4qrk1/p1n2ppp/bp6/2pp4/6P1/PBP4P/1P1Q1PK1/R5NR b - - 2 19")
+    game = Main("")
 
 #TODO figure out how to feed AI, back of our mind (evaulate board, evaulate position); check en passant interactions w/ new legal move filtering, stalemate, checkmate, 50 move clock
 

@@ -130,6 +130,9 @@ class Board:
 
     def set_turn(cls, turn):
         cls._turn = turn
+    
+    def change_turn(cls):
+        cls._turn = cls._turn * -1
 
 
     def set_board(cls, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Kkq - 0 1") -> None:

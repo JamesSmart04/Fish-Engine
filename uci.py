@@ -40,8 +40,9 @@ class Uci:
                     print(cls.Board)
                 
                 case "getlegal":
-                    print(cls.Board.get_legal_moves())
-                    print(cls.Board._king_attacked_squares)
+                    print("legal moves: ",cls.Board.get_legal_moves())
+                    print("king attacked: ",cls.Board._king_attacked_squares)
+                    print("nodes checked: ", len(cls.Board.get_legal_moves()))
                 
                 case "setoption":
                     options_to_be_changed.append(command[1:])
@@ -52,6 +53,9 @@ class Uci:
                         # TODO: change the options
                         pass
                     output("readyok")
+                
+                case "testing":
+                    cls.testing_generation()
                 
                 case "ucinewgame":
                     cls.continued_game = False
@@ -83,11 +87,34 @@ class Uci:
                     output("bestmove", random_move)
                 
                 case "quit":
-                    pass
+                    break
                 
                 case "debug":
                     pass
                 
                 case "stop":
                     pass
-                    
+        
+    def testing_generation(cls):
+        # 1. take the final uci message sent before the error (position startpos moves e2e4 ....)
+        # 2. make the moves on the board and print out all legal moves generated and how many there are
+        # 3. compare the numbers given to what stockfish finds with the same positions
+        # 4. ???? profit ????
+        uci_message = input("Enter moves made (e2e4, d7d5 ...)")
+        uci_message = uci_message.split(" ")
+        cls.Board.set_board()
+        
+        
+        # initial move for white (20 nodes)
+        print(cls.Board.get_legal_moves())
+        print(len(cls.Board.get_legal_moves()))
+        
+        for move in uci_message:
+            cls.Board.update_position(move)
+            print(cls.Board.get_legal_moves())
+            print(len(cls.Board.get_legal_moves()))
+            
+        cls.Board.change_turn()
+        
+        print(cls.Board.get_legal_moves())
+        print(len(cls.Board.get_legal_moves()))
