@@ -4,7 +4,7 @@ import copy
 
 class Board:
 
-    def __init__(self, FEN: str) -> None:
+    def __init__(self, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Kkq - 0 1") -> None:
         self._white_checked = False
         self._black_checked = False
         self.black_en_passant_list = []
@@ -19,7 +19,7 @@ class Board:
         out = []
         #printing for console
         for i in range(len(cls._rep)):
-            print(len(cls._rep)-1-i,[str(j) for j in cls._rep[i]],i) 
+            print(len(cls._rep)-i,[str(j) for j in cls._rep[i]],i) 
             out += cls._rep[i]
         return cls.export_FEN()
 
@@ -109,6 +109,7 @@ class Board:
             cls._king_attacked_squares = cls._white_king.check_attacked_squares(cls._white_king.get_position(),cls,cls._white_king.get_colour())
         else:
             cls._king_attacked_squares = cls._black_king.check_attacked_squares(cls._black_king.get_position(),cls,cls._black_king.get_colour())
+    
     def get_king_attacked_squares(cls):
         return cls._king_attacked_squares
     
@@ -131,7 +132,7 @@ class Board:
         cls._turn = turn
 
 
-    def set_board(cls, FEN: str) -> None:
+    def set_board(cls, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Kkq - 0 1") -> None:
         """iterates through the FEN string generating piece objects based on the current
         character of an FEN string. Then stores the board as cls.board and stores castling info
         """
@@ -276,7 +277,7 @@ class Board:
         cls._black_checked = False
 
         cls._legal_moves = cls.get_legal_moves()   
-        print(cls._legal_moves)  
+        #print(cls._legal_moves)  
         #chekcing if the game should end 
         cur_check = cls._white_checked if cls._turn == -1 else cls._black_checked
         game_over = True
@@ -305,8 +306,8 @@ class Board:
             cls.clear_black_en_passant_list()
         else:
             cls.clear_white_en_passant_list()
-        
-        print(cls)
+    
+    
     def pawn_promotion(cls, promotion_pawn,promoTo):
         #please select a piece
         
