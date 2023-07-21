@@ -25,7 +25,7 @@ class Knight(Piece):
                         # far left upper square is either empty or an enemy piece
                         legal_moves.append(far_upper._pos)
                 
-                if cls._pos[1] > 0 and cls._pos[1] <= 6:    
+                if cls._pos[1] >= 0 and cls._pos[1] <= 6:    
                     far_lower = board._rep[cls._pos[1]+1][cls._pos[0]-2*direction]
                     if isinstance(far_lower, Empty) or far_lower.get_colour() != cls._colour:
                         # far left lower square is either empty or an enemy piece
