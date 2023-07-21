@@ -9,10 +9,12 @@ class Board:
         self._black_checked = False
         self.black_en_passant_list = []
         self.white_en_passant_list = []
+        self._previous_state = [] 
+        '''stack of lists, [board rep, self._white_chekced,self._black_checked,self.black_en_passant_list,self.white_en_passant_list,
+                    self._white_castling_availibility, self.black_castling_availibility, self._turn, self.legal_moves[8]] '''
+
         self._game_state = "active"
         self.set_board(FEN)
-
-
 
 
     def __str__(cls) -> str: #prints board to console and returns FEN
@@ -41,6 +43,20 @@ class Board:
 
             if i != len(cls._rep)-1:
                 FEN += "/"  
+
+        if cls.get_turn() == "white":
+            FEN += " w "
+        else:
+            FEN += " b "
+        
+        if cls._white_castling_availibility[0]:
+            FEN+= "K"
+        if cls._white_castling_availibility[1]:
+            FEN+="Q"
+        if cls._black_castling_availibility[0]:
+            FEN+= "k"
+        if cls._black_castling_availibility[1]:
+            FEN += "q"
         return FEN
     
 
@@ -103,6 +119,19 @@ class Board:
                 continue
         legal_moves = temp
         return legal_moves
+
+        
+    def unmove(self):
+        previous_state = self._previous_state.pop()
+        self.set_board(previous_state[0])
+        self._white_checked = previous_state[1]
+        self._black_checked = previous_state[2]
+        self.black_en_passant_list = previous_state[3]
+        self.white_en_passant_list = previous_state[4]
+        self._white_castling_availibility = previous_state[5]
+        self._black_castling_availibility = previous_state[6]
+        self._turn = previous_state[7]
+
 
     def set_king_attacked_squares(cls) -> None:
         if cls.get_turn() == "white":
@@ -188,9 +217,17 @@ class Board:
             return output
         else:
             return output
+        
+        
 
-
+        '''stack of lists, [board rep, self._white_chekced,self._black_checked,self.black_en_passant_list,self.white_en_passant_list,
+                    self._white_castling_availibility, self.black_castling_availibility, self._turn, self.legal_moves[8]] '''
+        
     def update_position(cls,moveString) -> None: 
+        cls._previous_state.append([cls.export_FEN(), cls._white_checked, cls._black_checked, cls.black_en_passant_list[:], cls.white_en_passant_list[:],\
+                                   cls._white_castling_availibility[:],cls._black_castling_availibility[:],cls._turn, cls._legal_moves[:]])
+        
+
         moving_piece = moveString[0:2]
         target_piece = moveString[2:4]
         if len(moveString) > 4:
@@ -209,7 +246,7 @@ class Board:
         direction = 1 if cls.get_turn() == "black" else -1
         en_passant_list = cls.get_black_en_passant_list() if direction == -1 else cls.get_white_en_passant_list()
         en_passant_piece = cls.get_piece([target_piece_position[0], target_piece_position[1]-direction])
-        if isinstance(moving_piece, Pawn) and en_passant_piece.get_position() in en_passant_list:
+        if isinstance(moving_piece, Pawn) and en_passant_piece and  en_passant_piece.get_position() in en_passant_list:
             # this means the pawn performed en passant
             temp_piece = Empty(pos=en_passant_piece.get_position())
             cls._rep[en_passant_piece._pos[1]][en_passant_piece._pos[0]] = temp_piece
@@ -272,7 +309,7 @@ class Board:
         promoRank = 7 if cls._turn == 1 else 0
 
         if isinstance(moving_piece, Pawn) and moving_piece.get_position()[1] == promoRank:
-            cls.pawn_promotion(moving_piece,promo)
+            cls.pawn_promotion(moving_piece,promo)      
 
 
         cls._turn = cls._turn*-1 #changing to opposite turn
@@ -309,7 +346,7 @@ class Board:
             cls.clear_black_en_passant_list()
         else:
             cls.clear_white_en_passant_list()
-    
+        
     
     def pawn_promotion(cls, promotion_pawn,promoTo):
         #please select a piece
