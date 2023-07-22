@@ -4,7 +4,7 @@ import copy
 
 class Board:
 
-    def __init__(self, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Kkq - 0 1") -> None:
+    def __init__(self, FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") -> None:
         self._white_checked = False
         self._black_checked = False
         self.black_en_passant_list = []
@@ -114,6 +114,8 @@ class Board:
         for i in legal_moves:
             if legal_moves[i]:
                 for j in legal_moves[i]:
+                    if convert_pos_to_string(j) == None:
+                        print(curPiece,legal_moves[i],j)
                     temp.append(i+convert_pos_to_string(j))
             else:
                 continue
@@ -224,6 +226,7 @@ class Board:
                     self._white_castling_availibility, self.black_castling_availibility, self._turn, self.legal_moves[8]] '''
         
     def update_position(cls,moveString) -> None: 
+        cls._most_recent_move = moveString
         cls._previous_state.append([cls.export_FEN(), cls._white_checked, cls._black_checked, cls.black_en_passant_list[:], cls.white_en_passant_list[:],\
                                    cls._white_castling_availibility[:],cls._black_castling_availibility[:],cls._turn, cls._legal_moves[:]])
         
