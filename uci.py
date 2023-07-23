@@ -1,12 +1,14 @@
 import Modules
 from functools import partial
-from random import randint
+import minimax
+import evaluation
 
 
 class Uci:
     def __init__(self) -> None:
         self.Board = Modules.board.Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Kkq - 0 1")
         self.continued_game = False
+        self.Depth = 3
         self.uci_communications()
     
     def uci_communications(cls):
@@ -19,6 +21,7 @@ class Uci:
         # format: option name {thing} type {thing} default {defVal} min {val} max {val}
         # TODO: add parameters
         output("option name Hash type spin default 1 min 1 max 128")
+        output("option name Depth type spin default 3 min 1 max 4")
         
         # engine has sent all parameters and is ready to do stuff
         output("uciok")
@@ -45,13 +48,14 @@ class Uci:
                     print("nodes checked: ", len(cls.Board.get_legal_moves()))
                 
                 case "setoption":
-                    options_to_be_changed.append(command[1:])
+                    option = command[1:]
+                    options_to_be_changed.append(option)
                 
                 case "isready":
                     # initialise engine with changed settings
                     for i in options_to_be_changed:
-                        # TODO: change the options
-                        pass
+                        if i[0] == "Depth":
+                            cls.Depth = i[1]
                     output("readyok")
                 
                 case "testing":
@@ -81,10 +85,15 @@ class Uci:
                         cls.Board.update_position(Lastmove)
                 
                 case "go":
-                    legal_moves = cls.Board.get_legal_moves()
-                    random_move = legal_moves[randint(0, len(legal_moves)-1)]
-                    cls.Board.update_position(random_move)
-                    output("bestmove", random_move)
+                    maxPlayer = True if cls.Board.get_turn() == "white" else False
+                    evalClass = evaluation.eval()
+                    best_move = minimax.minimax(evalClass, cls.Board, cls.Depth, maxPlayer)
+                    output("bestmove", best_move[1])
+                    cls.Board.update_position(best_move[1])
+                
+                case "getEval":
+                    evalClass = evaluation.eval()
+                    print(evalClass.evalPosition(cls.Board))
                 
                 case "quit":
                     break

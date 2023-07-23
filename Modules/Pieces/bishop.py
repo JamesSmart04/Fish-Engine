@@ -5,7 +5,7 @@ class Bishop(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
         super().__init__(colour, pos)
         self._piece = "b"
-        self._value = 320
+        self._value = 330
     
     def get_pseudo_legal_moves(cls, board):
         legal_moves = []

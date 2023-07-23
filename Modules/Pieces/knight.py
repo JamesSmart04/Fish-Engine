@@ -7,7 +7,7 @@ class Knight(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
         super().__init__(colour, pos)
         self._piece = "n"
-        self._value = 300
+        self._value = 320
     
     def get_pseudo_legal_moves(cls,board):# def get_pseudo_legal_moves(cls, board):
         legal_moves = []

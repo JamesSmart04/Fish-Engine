@@ -25,6 +25,7 @@ class King(Piece):
     def __init__(self, colour="white", pos=[0, 0]) -> None:
         super().__init__(colour, pos)
         self._piece = "k"
+        self._value = 20000
     
     def check_attacked_squares(cls,pos,board, colour,isKing = True):
                 # counter = 0
