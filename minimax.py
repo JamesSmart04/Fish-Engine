@@ -11,13 +11,13 @@ def minimax(myEval,board,depth,maxPlayer,alpha=[float('-inf'),1],beta=[float('in
         for i in board._legal_moves:
             board.update_position(i)
             cur_eval = minimax(myEval,board,depth-1,False,alpha,beta)
-            max_eval = max(max_eval,cur_eval)
+            if max_eval < cur_eval:
+                max_eval = cur_eval
+                max_eval[1] = i 
             board.unmove()
-            if cur_eval[0] == max_eval[0]:
-                max_eval[1] = i
-            #alpha = max(alpha, cur_eval)
-            #if beta <= alpha:
-            #    break
+            alpha = max(alpha, max_eval)
+            if beta <= alpha:
+               break
         return max_eval
     
     if not maxPlayer:
@@ -25,14 +25,16 @@ def minimax(myEval,board,depth,maxPlayer,alpha=[float('-inf'),1],beta=[float('in
         for i in board._legal_moves:
             board.update_position(i)
             cur_eval = minimax(myEval,board,depth-1,True,alpha,beta)
-            min_eval = min(min_eval,cur_eval)
+            if min_eval > cur_eval:
+                min_eval = cur_eval
+                min_eval[1] = i 
             board.unmove()
-            if cur_eval[0] == min_eval[0]:
-                min_eval[1] = i
-            #beta = min(beta,cur_eval)
-            #if beta <= alpha:
-            #    break
+            beta = min(beta,min_eval)
+            if beta <= alpha: 
+               break
         return min_eval
 
-#print(minimax(Modules.board.Board(), 2, True))
+
+# myEval = evaluation.eval()
+# print(minimax(myEval,Modules.board.Board(), 3, True))
 #print(myEval.evalPosition(Modules.board.Board("r1bqkbnr/pppppppp/2n5/8/8/7N/PPPPPPPP/RNBQKB1R w KQkq - 0 1")))
