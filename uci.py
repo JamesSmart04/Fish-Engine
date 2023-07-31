@@ -21,7 +21,7 @@ class Uci:
         # format: option name {thing} type {thing} default {defVal} min {val} max {val}
         # TODO: add parameters
         output("option name Hash type spin default 1 min 1 max 128")
-        output("option name Depth type spin default 3 min 1 max 4")
+        output("option name Depth type spin default 3 min 1 max 3")
         
         # engine has sent all parameters and is ready to do stuff
         output("uciok")

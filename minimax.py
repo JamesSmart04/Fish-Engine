@@ -16,8 +16,8 @@ def minimax(myEval,board,depth,maxPlayer,alpha=[float('-inf'),1],beta=[float('in
                 max_eval[1] = i 
             board.unmove()
             alpha = max(alpha, max_eval)
-            if beta <= alpha:
-               break
+            if beta[0] <= alpha[0]:
+                break
         return max_eval
     
     if not maxPlayer:
@@ -30,8 +30,8 @@ def minimax(myEval,board,depth,maxPlayer,alpha=[float('-inf'),1],beta=[float('in
                 min_eval[1] = i 
             board.unmove()
             beta = min(beta,min_eval)
-            if beta <= alpha: 
-               break
+            if beta[0] <= alpha[0]: 
+                break
         return min_eval
 
 

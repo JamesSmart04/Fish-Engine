@@ -47,5 +47,5 @@ class Main():
 if __name__ == "__main__":
     game = Main("")
 
-#TODO figure out how to feed AI, back of our mind (evaulate board, evaulate position); check en passant interactions w/ new legal move filtering, stalemate, checkmate, 50 move clock
+#TODO: fix bug causing legal moves to be arrays of values larger than 2, improve eval function to account for centre control, connectedness, pawn structures, set up playing against itself to tune eval factors, opening book
 

@@ -8,9 +8,9 @@ class eval:
             "P" : ((0, 0, 0, 0, 0, 0, 0, 0),
                    (50, 50, 50, 50, 50, 50, 50, 50),
                    (10, 10, 20, 30, 30, 20, 10, 10),
-                   (5,  5, 10, 25, 25, 10,  5,  5),
-                   (0,  0,  0, 20, 20,  0,  0,  0),
-                   (5, -5, -10,  0,  0, -10, -5, 5),
+                   (5,  5, 10, 26, 25, 10,  5,  5),
+                   (0,  0,  0, 25, 20,  0,  0,  0),
+                   (5, 5, -10,  0,  0, -10, 5, 5),
                    (5, 10, 10, -20, -20, 10, 10, 5),
                    (0, 0, 0, 0, 0, 0, 0, 0)
                 ),
@@ -18,9 +18,9 @@ class eval:
             "N" : ((-50,-40,-30,-30,-30,-30,-40,-50),
                    (-40,-20,  0,  0,  0,  0,-20,-40),
                    (-30,  0, 10, 15, 15, 10,  0,-30),
-                   (-30,  5, 15, 20, 20, 15,  5,-30),
-                   (-30,  0, 15, 20, 20, 15,  0,-30),
-                   (-30,  5, 10, 15, 15, 11,  5,-30),
+                   (-30,  5, 15, 16, 15, 15,  5,-30),
+                   (-30,  0, 15, 15, 15, 15,  0,-30),
+                   (-30,  5, 13, 11, 11, 15,  5,-30),
                    (-40,-20,  0,  5,  5,  0,-20,-40),
                    (-50,-40,-30,-30,-30,-30,-40,-50)
                 ),
@@ -30,7 +30,7 @@ class eval:
                    (-10,  5,  5, 10, 10,  5,  5,-10),
                    (-10,  0, 10, 10, 10, 10,  0,-10),
                    (-10, 10, 10, 10, 10, 10, 10,-10),
-                   (-10,  5,  0,  0,  0,  0,  5,-10),
+                   (-10,  11,  0,  0,  0,  0,  11,-10),
                    (-20,-10,-10,-10,-10,-10,-10,-20)
                 ),
             "R" : ((0,  0,  0,  0,  0,  0,  0,  0),
@@ -40,7 +40,7 @@ class eval:
                    (-5,  0,  0,  0,  0,  0,  0, -5),
                    (-5,  0,  0,  0,  0,  0,  0, -5),
                    (-5,  0,  0,  0,  0,  0,  0, -5),
-                   (0,  0,  0,  5,  5,  0,  0,  0)
+                   (0,  0,  0,  10,  5,  10,  0,  0)
                 ),
             "Q" : ((-20,-10,-10, -5, -5,-10,-10,-20),
                    (-10,  0,  0,  0,  0,  0,  0,-10),
@@ -58,7 +58,7 @@ class eval:
                    (-20,-30,-30,-40,-40,-30,-30,-20),
                    (-10,-20,-20,-20,-20,-20,-20,-10),
                    (20, 20,  0,  0,  0,  0, 20, 20),
-                   (20, 30, 10,  0,  0, 10, 30, 20)
+                   (20, 32, 30,  0,  0, 10, 35, 20)
                 ),
             "Ke" : ((-50,-40,-30,-20,-20,-30,-40,-50),
                     (-30,-20,-10,  0,  0,-10,-20,-30),
@@ -107,10 +107,11 @@ class eval:
             return False
         return True
 
-    def evalPosition(cls, Board : Modules.board.Board):
+    
+    def materialEval(cls, Board : Modules.board.Board):
         sum_of_position = 0
         
-        if cls.endgame == False:
+        if not cls.endgame:
             cls.endgame = cls.isEndGame(Board)
         
         # evaluating material
@@ -122,10 +123,17 @@ class eval:
                 
                 # flips the value table if the piece colour is black, and grabs the position bonus based on the pieces pos
                 position_bonus = piece_value_table[::-1][square._pos[1]][square._pos[0]] if square._colour == "black" else piece_value_table[square._pos[1]][square._pos[0]]
-                                
+                      
                 square_val = ((square._value+position_bonus)*-1) if square.get_colour() == "black" else (square._value+position_bonus)
+                    
                 
                 sum_of_position += square_val
+        return sum_of_position
+
+        
+    def evalPosition(cls, Board : Modules.board.Board):
+        finished_eval = 0
+        finished_eval += cls.materialEval(Board)
         
         # evaluating mobility (how many legal moves each side has)
         white_mobility_score = Board.get_legal_moves()
@@ -133,8 +141,21 @@ class eval:
         Board.change_turn()
         black_mobility_score = Board.get_legal_moves()
         black_checked = Board.get_black_checked()
+        Board.change_turn()
         
-        finished_eval = sum_of_position + (0.1 * (len(white_mobility_score) - len(black_mobility_score)))
+        finished_eval += 0.2 * (len(white_mobility_score) - len(black_mobility_score))
         
+        if white_mobility_score == 0:
+            if white_checked:
+                # black wins from checkmate:
+                return float("-inf")
+            else:
+                return 0
         
+        elif black_mobility_score == 0:
+            if black_checked:
+                # white wins from checkmate:
+                return float("inf")
+            else:
+                return 0
         return finished_eval
