@@ -13,7 +13,7 @@ def convert_pos(pos:list) -> list:
 
     else:
         return pos
-    
+
 def convert_pos_to_string(pos:list) -> str:
     if not pos:
         return ""

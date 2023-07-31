@@ -145,17 +145,31 @@ class eval:
         
         finished_eval += 0.2 * (len(white_mobility_score) - len(black_mobility_score))
         
-        if white_mobility_score == 0:
-            if white_checked:
-                # black wins from checkmate:
-                return float("-inf")
+        cur_state = Board.get_game_state()
+        if cur_state != "active":
+            cur_turn  = Board.get_turn()
+            if cur_turn == 'white':
+                if Board.get_game_state() == "Checkmate":
+                    return float('-inf')
+                else:
+                    return 0
             else:
-                return 0
+                if Board.get_game_state() == "Checkmate":
+                    return float('inf')
+                else:
+                    return 0
+
+        # if white_mobility_score == 0:
+        #     if white_checked:
+        #         # black wins from checkmate:
+        #         return float("-inf")
+        #     else:
+        #         return 0
         
-        elif black_mobility_score == 0:
-            if black_checked:
-                # white wins from checkmate:
-                return float("inf")
-            else:
-                return 0
+        # elif black_mobility_score == 0:
+        #     if black_checked:
+        #         # white wins from checkmate:
+        #         return float("inf")
+        #     else:
+        #         return 0
         return finished_eval
