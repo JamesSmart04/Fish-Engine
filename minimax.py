@@ -14,6 +14,7 @@ def minimax(myEval,board,depth,maxPlayer,alpha=[float('-inf'),1],beta=[float('in
             if max_eval[0] < cur_eval[0]:
                 max_eval = cur_eval
                 max_eval[1] = i 
+            # print(cur_eval)
             board.unmove()
             alpha = max(alpha, max_eval)
             if beta[0] <= alpha[0]:
@@ -26,15 +27,10 @@ def minimax(myEval,board,depth,maxPlayer,alpha=[float('-inf'),1],beta=[float('in
         for i in board._legal_moves:
             board.update_position(i)
             cur_eval = minimax(myEval,board,depth-1,True,alpha,beta)
-            try:
-                if min_eval[0] > cur_eval[0]:
-                    min_eval = cur_eval
-                    min_eval[1] = i 
-            except Exception as e:
-                print(e)
-                print(min_eval,cur_eval)
-                print(f"moves generated:\nBoard:{board}\ncur_legal_moves: {i}" ) 
-                
+            if min_eval[0] > cur_eval[0]:
+                min_eval = cur_eval
+                min_eval[1] = i 
+               
             board.unmove()
             beta = min(beta,min_eval)
             if beta[0] <= alpha[0]: 
@@ -42,7 +38,7 @@ def minimax(myEval,board,depth,maxPlayer,alpha=[float('-inf'),1],beta=[float('in
         return min_eval
 
 
-myEval = evaluation.eval()
-myBoard = Modules.board.Board("2kr1b1r/pp3ppp/2p1b2q/4B3/4Q3/2PB2R1/PPP2PPP/3R2K1 w - - 1 0")
-print(myBoard)
-print(minimax(myEval,myBoard, 3, True))
+# myEval = evaluation.eval()
+# myBoard = Modules.board.Board()
+# print(myBoard)
+# print(minimax(myEval,myBoard, 3, True))

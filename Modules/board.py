@@ -229,7 +229,7 @@ class Board:
     def update_position(cls,moveString) -> None: 
         cls._most_recent_move = moveString
         cls._previous_state.append([cls.export_FEN(), cls._white_checked, cls._black_checked, cls.black_en_passant_list[:], cls.white_en_passant_list[:],\
-                                   cls._white_castling_availibility[:],cls._black_castling_availibility[:],cls._turn, cls._legal_moves[:],cls._game_state[:]])
+                                   cls._white_castling_availibility[:],cls._black_castling_availibility[:],cls._turn,cls._game_state])
         
 
         moving_piece = moveString[0:2]
