@@ -19,39 +19,40 @@ std::unordered_map<char, U64> readFEN(std::string FEN){
 
     int count = 0 ;
     std::vector<std::string> FENlist = split(FEN,' ');
-
     std::string pieces = FENlist[0];
-    std::vector<std::string> rank_list = split(pieces,'/');
     count = 0;
-    for(std::string cur_rank : rank_list){
-        for(int i = cur_rank.length()-1; i >= 0; i--){
+    for(int i = pieces.length()-1; i >= 0; i--){
+
+            if ((int)pieces[i] == 47){
+                continue;
+            }
             // a number
-            if ((int)cur_rank[i] < 65){
-            count += (int)cur_rank[i]-48;   
+            else if ((int)pieces[i] < 65){
+            count += (int)pieces[i]-48;   
             }
             // a piece
             else{
                 int shift = count;
-                pieceDictionary[cur_rank[i]] |= (1ULL<<shift);
+                pieceDictionary[pieces[i]] |= (1ULL<<shift);
                 count++;
             }
         }
-    }
-    U64 white = 0ULL;
-    U64 black = 0ULL;
+        U64 white = 0ULL;
+        U64 black = 0ULL;
 
-    for(auto i : pieceDictionary){
-        if (int(i.first) < 91){
-            white |= i.second;
+        for(auto i : pieceDictionary){
+            if (int(i.first) < 91){
+                white |= i.second;
+            }
+            else{
+                black |= i.second;
+            }
         }
-        else{
-            black |= i.second;
-        }
+        pieceDictionary['f'] = white;
+        pieceDictionary['e'] = black;  
+        return pieceDictionary;  
     }
-    pieceDictionary['f'] = white;
-    pieceDictionary['e'] = black;  
-    return pieceDictionary;   
-}
+    
 
 std::unordered_map<char, U64> exportFEN(std::string FEN);
 std::string exportFEN(std::unordered_map<char,U64> board){
@@ -69,38 +70,75 @@ std::string exportFEN(std::unordered_map<char,U64> board){
 
     
     int counter = 1;
-    // loops through all squares in the chess board
-    for(int i = 63; i >= 0; i--){
+    for (int i = 0; i < 64; i++){
+        if (completeBitBoard[i] == '0'){
+            // std::cout << i << "\n";
 
-        if (completeBitBoard[i] != '1'){
-            // square is empty
-            while (completeBitBoard[i] != '1' && counter < 8){
-                counter++;
-                i--;
+            while(completeBitBoard[i] == '0')
+            {
+                std::cout << i << "\n";
+                counter += 1;
+                i+=1;
+                if (i%8 == 0){
+                    break;
+                }
             }
-            std::cout << counter << "\n";
+            std::cout << "Finished" << "\n";
             outputFEN.append(std::to_string(counter));
-            counter = 0;
+            counter =1;
         }
+        else{
+            for (auto curPiece : stringBoard){
+                if (curPiece.second[i] == '1'){
+                    outputFEN.append(curPiece.first);
+                    break;
+                }
+        }
+    }
+    if ((i+1) % 8 == 0 && i != 0){
+        outputFEN.append("/");
+    }
+    // loops through all squares in the chess board
+    // for(int i = 0; i < 64; i++){
+    //     // reached the end of a row so a / is added to the fen
 
-        // reached the end of a row so a / is added to the fen
-        if ((i+1) % 8 == 0){
-            outputFEN.append("/");
-        }
+    //     if (i % 8 == 0){
+    //         outputFEN.append("/");
+    //     }
+    //     if (completeBitBoard[i] != '1'){
+    //         // square is empty
+    //         counter++;
+    //         i++;
+    //         while (completeBitBoard[i] != '1'){
+    //             counter++;
+    //             i++;
+    //             std::cout << i << "\n";
+    //             if (i%8 ==  0){
+    //                 break;
+    //             }
+    //         }
+    //         std::cout << counter << "\n";
+    //         outputFEN.append(std::to_string(counter));
+    //         counter = 0;
+    //     }
+                
+
 
         // check each bitboard to see if there is a piece is in that location
-        for (auto curPiece : stringBoard){
-            if (curPiece.second[i] == '1'){
-                outputFEN.append(curPiece.first);
-                break;
-            }
-        }
+        // for (auto curPiece : stringBoard){
+        //     if (curPiece.second[i] == '1'){
+        //         outputFEN.append(curPiece.first);
+        //         break;
+        //     }
+        // }
+
 
         
     }
-    return outputFEN.substr(1);
+    return outputFEN.substr(0);
 }
 
+void outputBoard(std::unordered_map<char,U64> board);
 
 void outputBoard(std::unordered_map<char,U64> board){
     for(auto i : board)
@@ -112,8 +150,8 @@ void outputBoard(std::unordered_map<char,U64> board){
 
 
 int main(){
-    std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-    
+    std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    outputBoard(board);
     std::cout << exportFEN(board) << "\n";
     return 0;
 }
