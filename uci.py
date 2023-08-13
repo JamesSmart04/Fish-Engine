@@ -89,6 +89,7 @@ class Uci:
                     evalClass = evaluation.eval()
                     best_move = minimax.minimax(evalClass, cls.Board, cls.Depth, maxPlayer)
                     output("bestmove", best_move[1])
+                    output("info string", str(cls.Board.get_turn()))
                     cls.Board.update_position(best_move[1])
                 
                 case "getEval":

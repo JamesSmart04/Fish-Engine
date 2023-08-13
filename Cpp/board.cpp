@@ -24,7 +24,6 @@ std::unordered_map<char, U64> readFEN(std::string FEN){
     std::vector<std::string> rank_list = split(pieces,'/');
     count = 0;
     for(std::string cur_rank : rank_list){
-        std::cout << cur_rank << "\n";
         for(int i = cur_rank.length()-1; i >= 0; i--){
             // a number
             if ((int)cur_rank[i] < 65){
@@ -37,8 +36,7 @@ std::unordered_map<char, U64> readFEN(std::string FEN){
                 count++;
             }
         }
-    }   
-    std::cout << count << "\n";
+    }
     U64 white = 0ULL;
     U64 black = 0ULL;
 
@@ -50,26 +48,73 @@ std::unordered_map<char, U64> readFEN(std::string FEN){
             black |= i.second;
         }
     }
-    pieceDictionary['w'] = white;
-    pieceDictionary['b'] = black;  
+    pieceDictionary['f'] = white;
+    pieceDictionary['e'] = black;  
     return pieceDictionary;   
 }
 
-
-
-int main(){
-    std::unordered_map<char,U64> myDict = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-    U64 binary = 0ULL;
-    binary |= (1ULL<<32);
+std::unordered_map<char, U64> exportFEN(std::string FEN);
+std::string exportFEN(std::unordered_map<char,U64> board){
+    std::unordered_map<std::string,std::string> stringBoard = std::unordered_map<std::string,std::string>();
+    std::string outputFEN = "";
     
-    std::string out = std::bitset<std::numeric_limits<U64>::digits>(myDict['k']).to_string();
-    // std::cout << binary << "\n";
-    for(auto i : myDict)
+    // making a "complete" bitboard
+    std::string completeBitBoard = std::bitset<std::numeric_limits<U64>::digits>(board['e'] | board['f']).to_string();
+
+    for (auto curPiece : board){
+        if (!(curPiece.first == 'f' || curPiece.first == 'e')){
+            stringBoard[std::string(1, curPiece.first)] = std::bitset<std::numeric_limits<U64>::digits>(curPiece.second).to_string();
+        }
+    }
+
+    
+    int counter = 1;
+    // loops through all squares in the chess board
+    for(int i = 63; i >= 0; i--){
+
+        if (completeBitBoard[i] != '1'){
+            // square is empty
+            while (completeBitBoard[i] != '1' && counter < 8){
+                counter++;
+                i--;
+            }
+            std::cout << counter << "\n";
+            outputFEN.append(std::to_string(counter));
+            counter = 0;
+        }
+
+        // reached the end of a row so a / is added to the fen
+        if ((i+1) % 8 == 0){
+            outputFEN.append("/");
+        }
+
+        // check each bitboard to see if there is a piece is in that location
+        for (auto curPiece : stringBoard){
+            if (curPiece.second[i] == '1'){
+                outputFEN.append(curPiece.first);
+                break;
+            }
+        }
+
+        
+    }
+    return outputFEN.substr(1);
+}
+
+
+void outputBoard(std::unordered_map<char,U64> board){
+    for(auto i : board)
     {
         std::string out = std::bitset<std::numeric_limits<U64>::digits>(i.second).to_string();
         std::cout << i.first << "   " << out << "\n";
-    }    
+    }
+}
+
+
+int main(){
+    std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
     
+    std::cout << exportFEN(board) << "\n";
     return 0;
 }
 
