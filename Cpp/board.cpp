@@ -69,74 +69,37 @@ std::string exportFEN(std::unordered_map<char,U64> board){
     }
 
     
-    int counter = 1;
+    int counter =1;
     for (int i = 0; i < 64; i++){
-        if (completeBitBoard[i] == '0'){
-            // std::cout << i << "\n";
-
-            while(completeBitBoard[i] == '0')
-            {
-                std::cout << i << "\n";
-                counter += 1;
-                i+=1;
-                if (i%8 == 0){
+        if (completeBitBoard[i] == '1'){
+            for (auto cur_piece : stringBoard){
+                if (cur_piece.second[i] == '1'){
+                    outputFEN.append(cur_piece.first);
                     break;
                 }
             }
-            std::cout << "Finished" << "\n";
-            outputFEN.append(std::to_string(counter));
-            counter =1;
         }
         else{
-            for (auto curPiece : stringBoard){
-                if (curPiece.second[i] == '1'){
-                    outputFEN.append(curPiece.first);
+            while(completeBitBoard[i+1] == '0' && (i+1) % 8 != 0){
+                counter++; 
+                if ((i+2)%8== 0){
+                    i+=1;
                     break;
                 }
+                i++;
+            }
+            outputFEN.append(std::to_string(counter));
+            counter = 1;
         }
-    }
-    if ((i+1) % 8 == 0 && i != 0){
-        outputFEN.append("/");
-    }
-    // loops through all squares in the chess board
-    // for(int i = 0; i < 64; i++){
-    //     // reached the end of a row so a / is added to the fen
 
-    //     if (i % 8 == 0){
-    //         outputFEN.append("/");
-    //     }
-    //     if (completeBitBoard[i] != '1'){
-    //         // square is empty
-    //         counter++;
-    //         i++;
-    //         while (completeBitBoard[i] != '1'){
-    //             counter++;
-    //             i++;
-    //             std::cout << i << "\n";
-    //             if (i%8 ==  0){
-    //                 break;
-    //             }
-    //         }
-    //         std::cout << counter << "\n";
-    //         outputFEN.append(std::to_string(counter));
-    //         counter = 0;
-    //     }
-                
-
-
-        // check each bitboard to see if there is a piece is in that location
-        // for (auto curPiece : stringBoard){
-        //     if (curPiece.second[i] == '1'){
-        //         outputFEN.append(curPiece.first);
-        //         break;
-        //     }
-        // }
-
-
-        
-    }
-    return outputFEN.substr(0);
+        if ((i+1) % 8 == 0 && (i+1) != 64){
+            outputFEN.append("/");
+        }
+    } 
+    return outputFEN.substr(0);  
 }
+    
+
 
 void outputBoard(std::unordered_map<char,U64> board);
 
@@ -152,7 +115,7 @@ void outputBoard(std::unordered_map<char,U64> board){
 int main(){
     std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     outputBoard(board);
-    std::cout << exportFEN(board) << "\n";
+    std::cout << exportFEN(board) << "\n";  
     return 0;
 }
 
