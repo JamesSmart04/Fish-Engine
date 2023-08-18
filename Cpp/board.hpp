@@ -3,7 +3,7 @@
 #include <bitset>
 #include <limits>
 #include <algorithm>
-#include "./misc/misc.h"
+#include "./misc/misc.hpp"
 typedef unsigned long long U64;
 
 std::unordered_map<std::string,std::string> convertToStringBoard(std::unordered_map<char, U64> board){
@@ -165,14 +165,4 @@ char getPieceAtSquare(std::unordered_map<char,U64> board, std::string square){
         }
     }
     return ' ';
-}
-
-int main(){
-    std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    outputBitBoards(board);
-    outputBoard(board);
-    
-    
-    std::cout << exportFEN(board) << "\n";  
-    return 0;
 }
