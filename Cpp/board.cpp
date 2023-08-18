@@ -2,10 +2,10 @@
 #include <unordered_map>
 #include <bitset>
 #include <limits>
+#include <algorithm>
 #include "./misc/misc.h"
 typedef unsigned long long U64;
 
-std::unordered_map<std::string,std::string> convertStringBoard(std::unordered_map<char, U64> board);
 std::unordered_map<std::string,std::string> convertToStringBoard(std::unordered_map<char, U64> board){
     //making a string board to use indexes
     std::unordered_map<std::string,std::string> stringBoard = std::unordered_map<std::string,std::string>();
@@ -18,7 +18,6 @@ std::unordered_map<std::string,std::string> convertToStringBoard(std::unordered_
 }
 
 
-std::unordered_map<char, U64> readFEN(std::string FEN);
 std::unordered_map<char, U64> readFEN(std::string FEN){
     std::unordered_map<char, U64> pieceDictionary = std::unordered_map<char, U64>();
 
@@ -112,7 +111,6 @@ std::string exportFEN(std::unordered_map<char,U64> board){
 }
 
 
-void outputBitBoards(std::unordered_map<char,U64> board);
 void outputBitBoards(std::unordered_map<char,U64> board){
     for(auto i : board){
         std::string out = std::bitset<std::numeric_limits<U64>::digits>(i.second).to_string();
@@ -149,8 +147,28 @@ void outputBoard(std::unordered_map<char,U64> board){
 }
 
 
+int convertFromNotation(std::string notation){ //expecting e.g a4
+    if (notation.length() != 2){
+        std::cout << "invalid notation";
+    }
+    char file_list[8] = {'a','b','c','d','e','f','g','h'};
+    int index =  std::distance(file_list, std::find(file_list, file_list + 8, notation[0]));
+    return 7-index + (8*(int(notation[1]) -48 - 1));  //subtracting one because it's 0 indexed 
+}
+
+char getPieceAtSquare(std::unordered_map<char,U64> board, std::string square){
+    int shift = convertFromNotation(square);
+    for (auto cur_piece : board){
+        if (cur_piece.first == 'e' || cur_piece.first == 'f'){continue;}
+        if (cur_piece.second & (1ULL<<shift)){
+            return cur_piece.first;
+        }
+    }
+    return ' ';
+}
+
 int main(){
-    std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pp2pppp/8/2p5/1PPp4/4PN2/P2P1PPP/RNBQKB1R w KQkq - 0 1");
+    std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     outputBitBoards(board);
     outputBoard(board);
     
