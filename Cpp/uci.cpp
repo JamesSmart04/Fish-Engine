@@ -12,10 +12,13 @@ void printBitboard(std::string bitstring){
 
 int main(){
     std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    outputBitBoards(board);
+    // outputBitBoards(board);
     outputBoard(board);                     
     std::cout << exportFEN(board) << "\n";  
-    generateKnightAttackTable();
-    printBitboard(std::bitset<std::numeric_limits<U64>::digits>(knight_attacks[63]).to_string());
-   return 0;
+    // generateKnightAttackTable();
+    // printBitboard(std::bitset<std::numeric_limits<U64>::digits>(knight_attacks[63]).to_string());
+    
+    
+    //std::cout << std::bitset<std::numeric_limits<U64>::digits>(w_pawn_any_attacks(board['P'])).to_string() << "\n";
+    return 0;
 }
