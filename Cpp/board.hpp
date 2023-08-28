@@ -153,7 +153,7 @@ int convertFromNotation(std::string notation){ //expecting e.g a4
     }
     char file_list[8] = {'a','b','c','d','e','f','g','h'};
     int index =  std::distance(file_list, std::find(file_list, file_list + 8, notation[0]));
-    return 7-index + (8*(int(notation[1]) -48 - 1));  //subtracting one because it's 0 indexed 
+    return 63-(7-index + (8*(int(notation[1]) -48 - 1))) ;  //subtracting one because it's 0 indexed -48 b/c ascii
 }
 
 char getPieceAtSquare(std::unordered_map<char,U64> board, std::string square){

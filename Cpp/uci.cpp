@@ -14,10 +14,15 @@ int main(){
     std::unordered_map<char,U64> board = readFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     // outputBitBoards(board);
     outputBoard(board);                     
-    std::cout << exportFEN(board) << "\n";  
-    // generateKnightAttackTable();
-    // printBitboard(std::bitset<std::numeric_limits<U64>::digits>(knight_attacks[63]).to_string());
-    
+    // std::cout << exportFEN(board) << "\n";  
+    generateForwardAttacks() ;
+    generateKnightAttackTable();
+    printBitboard(std::bitset<std::numeric_limits<U64>::digits>(pawn_forward_attacks[1][8]).to_string());
+
+    std::vector<std::string> knight_moves_uwu = getMoves(8,pawn_forward_attacks[1][8]);
+    for (auto i :  knight_moves_uwu){
+        std::cout << i << ", ";
+    }
     
     //std::cout << std::bitset<std::numeric_limits<U64>::digits>(w_pawn_any_attacks(board['P'])).to_string() << "\n";
     return 0;

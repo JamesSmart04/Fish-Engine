@@ -1,5 +1,7 @@
 #include <bitset>
 #include <iostream>
+#include <string>
+#include <vector>
 typedef unsigned long long U64;
 
 U64 getFile(int cur_bit) {
@@ -30,9 +32,31 @@ U64 getRank(int cur_bit) {
         }
         multiplyer++;
     }
-
+    return 0;
+}
+std::string convertToNotation(int cur_bit){
+    char file_list[8] = {'a','b','c','d','e','f','g','h'};
+    int cur_rank = 8-(cur_bit/8);
+    char cur_file = file_list[cur_bit%8];
+    std::string output = "";
+    output += cur_file;
+    output += std::to_string(cur_rank);
+    return output;
 }
 
+
+std::vector<std::string> getMoves(int current_pos, U64 moving_pos){
+   std::vector<std::string> output = std::vector<std::string>();
+   std::string orgin = convertToNotation(current_pos);
+   //finding moves from bitboard
+   for(int i = 0; i < 64; i++){
+        if (((1ULL << i) & moving_pos)!= 0ULL){
+            output.push_back(orgin+convertToNotation(63-i));
+        }
+   }
+   return output;
+
+}
 /***
  * 
  * 
@@ -63,7 +87,7 @@ void generateKnightAttackTable () {
         if ((i%8) < 2){
             current_attack &= knight_right_horiozntal_mask;
         }
-        knight_attacks[i] = current_attack;
+        knight_attacks[63-i] = current_attack;
         }
     }
 }
@@ -76,8 +100,31 @@ void generateKnightAttackTable () {
  * Pawn !
  * (save me)
 */
-U64 en_passant_list = 0ULL;
 
+extern U64 pawn_forward_attacks[2][64] = {{0ULL},{0ULL}}; // 0 = White; 1 = Black
+U64 en_passant_list = 0ULL;  
+
+void generateForwardAttacks() {
+    for(int i = 0; i < sizeof(pawn_forward_attacks)/sizeof(pawn_forward_attacks[0]);i++){
+        int shift = 8  + 16*(i*-1);
+        for (int j = 0; j < sizeof(pawn_forward_attacks[0])/sizeof(pawn_forward_attacks[0][0]); j++){
+            U64 current_attack_board = 0ULL;
+            if ( shift > 0 && j >= 8 && j <= 15){ //double pushing
+                int double_push = j+shift*2;
+                current_attack_board |= (1ULL <<double_push);
+            } 
+            else if(shift < 0 && j >= 48 && j <= 55)  {
+                int double_push = j+shift*2;
+                current_attack_board |= (1ULL<<double_push);
+            }
+            int single_push = j+shift;
+            if (single_push < 64){
+                current_attack_board |= (1ULL<<single_push);
+            }
+            pawn_forward_attacks[i][63-j] = current_attack_board;
+        }
+    }
+}
 
 U64 w_pawn_east_attacks(U64 wPawns){
     // removes the H file to get pawns that can attack east
