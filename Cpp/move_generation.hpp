@@ -55,8 +55,10 @@ std::vector<std::string> getMoves(int current_pos, U64 moving_pos){
         }
    }
    return output;
-
 }
+
+
+
 /***
  * 
  * 
@@ -102,7 +104,7 @@ void generateKnightAttackTable () {
 */
 
 extern U64 pawn_forward_attacks[2][64] = {{0ULL},{0ULL}}; // 0 = White; 1 = Black
-U64 en_passant_list = 0ULL;  
+
 
 void generateForwardAttacks() {
     for(int i = 0; i < sizeof(pawn_forward_attacks)/sizeof(pawn_forward_attacks[0]);i++){
@@ -177,3 +179,43 @@ U64 b_pawn_single_attacks(U64 bpawns) {
 }
 
 
+U64 w_generate_En_Passant_Moves(U64 en_passant_list, U64 wPawns) {
+    // generate the index of the en passant squares
+    // AND the 2 lists
+    // return the newly made list
+    return ((w_pawn_any_attacks(wPawns) << 8) & en_passant_list);
+}
+
+U64 b_generate_En_Passant_Moves(U64 en_passant_list, U64 bPawns) {
+    return ((b_pawn_any_attacks(bPawns) >> 8) & en_passant_list);
+}
+
+
+
+/***
+ * 
+ * 
+ * King !
+ *
+*/
+
+
+U64 generate_king_attack(U64 King_table){
+    U64 Completed_King_Attacks = 0ULL;
+    // use pawn diagonal attacks to calculate corner moves for king
+    Completed_King_Attacks |= (b_pawn_any_attacks(King_table) | w_pawn_any_attacks(King_table));
+
+    // generate forward attack
+    Completed_King_Attacks |= ((~getRank(63) & King_table) << 8);
+
+    // generate backwards attack
+    Completed_King_Attacks |= ((~getRank(0) & King_table) >> 8);
+    
+    // generate left move
+    Completed_King_Attacks |= ((~getFile(0) & King_table) << 1);
+
+    // generate right move
+    Completed_King_Attacks |= ((~getFile(7) & King_table) >> 1);
+
+    return Completed_King_Attacks;
+}
